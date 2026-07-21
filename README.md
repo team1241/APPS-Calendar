@@ -44,6 +44,23 @@ node -v   # should print v24.15.0
 npm -v
 ```
 
+### Other nvm commands
+
+Useful if you need to work with a different Node version later:
+
+```bash
+# Install the latest Node release
+nvm install latest
+
+# Install a specific version, e.g. v24.15.0
+nvm install vX.Y.Z
+
+# Switch to a specific version you've already installed
+nvm use vA.B.C
+```
+
+Example: `nvm use v24.15.0` switches your current shell to Node 24.15.0.
+
 Then install dependencies:
 
 ```bash
