@@ -7,12 +7,10 @@ export const record = mutation({
   args: { dollarAmount: v.number() },
   handler: async (ctx, args) => {
     const user = await requireAuthedUser(ctx);
-    const now = Date.now();
     return await ctx.db.insert("donations", {
       userId: user._id,
       dollarAmount: args.dollarAmount,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

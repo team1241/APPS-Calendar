@@ -13,13 +13,11 @@ export const subscribe = mutation({
       .unique();
     if (existing) return existing._id;
 
-    const now = Date.now();
     return await ctx.db.insert("subscriptions", {
       userId: user._id,
       eventId: args.eventId,
       subteamId: args.subteamId,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

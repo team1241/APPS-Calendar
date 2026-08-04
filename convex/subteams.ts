@@ -13,11 +13,9 @@ export const create = mutation({
   args: { subteamName: v.string() },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
-    const now = Date.now();
     return await ctx.db.insert("subteams", {
       subteamName: args.subteamName,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

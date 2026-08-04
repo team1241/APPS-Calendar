@@ -34,12 +34,10 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireAuthedUser(ctx);
-    const now = Date.now();
     return await ctx.db.insert("events", {
       ...args,
       author: user._id,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

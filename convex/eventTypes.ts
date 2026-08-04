@@ -18,11 +18,9 @@ export const create = mutation({
   args: { name: v.string() },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
-    const now = Date.now();
     return await ctx.db.insert("eventTypes", {
       name: args.name,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

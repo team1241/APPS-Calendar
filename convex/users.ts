@@ -65,7 +65,6 @@ export const ensureUser = mutation({
       .unique();
     if (existing) return existing._id;
 
-    const now = Date.now();
     return await ctx.db.insert("users", {
       email: identity.email ?? "",
       firstName: identity.givenName ?? "",
@@ -77,8 +76,7 @@ export const ensureUser = mutation({
       clerkId: identity.tokenIdentifier,
       isAdmin: false,
       isSignupComplete: false,
-      createdAt: now,
-      updatedAt: now,
+      updatedAt: Date.now(),
     });
   },
 });

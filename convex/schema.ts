@@ -18,7 +18,6 @@ export default defineSchema({
     clerkId: v.string(),
     isAdmin: v.boolean(),
     isSignupComplete: v.boolean(),
-    createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_clerkId", ["clerkId"])
@@ -33,7 +32,6 @@ export default defineSchema({
     author: v.id("users"),
     location: v.string(),
     info: v.optional(v.string()),
-    createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_startTime", ["startTime"])
@@ -42,7 +40,6 @@ export default defineSchema({
 
   subteams: defineTable({
     subteamName: v.string(),
-    createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_subteamName", ["subteamName"]),
 
@@ -50,7 +47,6 @@ export default defineSchema({
     userId: v.id("users"),
     eventId: v.id("events"),
     subteamId: v.id("subteams"),
-    createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_userId", ["userId"])
@@ -60,7 +56,6 @@ export default defineSchema({
   donations: defineTable({
     userId: v.id("users"),
     dollarAmount: v.number(),
-    createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_userId", ["userId"]),
 
@@ -70,7 +65,6 @@ export default defineSchema({
   // and stored as normal rows in `events`.
   eventTypes: defineTable({
     name: v.string(),
-    createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_name", ["name"]),
 });
