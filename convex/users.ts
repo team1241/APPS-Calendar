@@ -17,7 +17,7 @@ export async function getAuthedUser(
   if (!identity) return null;
   return await ctx.db
     .query("users")
-    .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.tokenIdentifier))
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
     .unique();
 }
 
@@ -61,7 +61,7 @@ export const ensureUser = mutation({
     }
     const existing = await ctx.db
       .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.tokenIdentifier))
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
       .unique();
     if (existing) return existing._id;
 
@@ -73,7 +73,7 @@ export const ensureUser = mutation({
       // isSignupComplete === false as "show the signup form".
       userType: "mentor",
       subteams: [],
-      clerkId: identity.tokenIdentifier,
+      clerkId: identity.subject,
       isAdmin: false,
       isSignupComplete: false,
       updatedAt: Date.now(),
