@@ -1,15 +1,13 @@
 "use client";
-import type React from "react";
 import { useLayoutEffect, useRef } from "react";
 import {
   CATEGORIES,
   type CategoryKey,
-  esc,
-  hexToRgba,
   positionPillIndicator,
   toDateInputValue,
 } from "@/lib/calendar/calendar";
 import { IconX } from "./IconX";
+import { SubteamPill } from "./SubteamPill";
 
 export function ComposerModal({
   mode,
@@ -197,36 +195,13 @@ export function ComposerModal({
                         CategoryKey,
                         { label: string; color: string },
                       ][]
-                    ).map(([key, c]) => (
-                      <button
-                        className="subteam-pill"
-                        data-subteam={key}
+                    ).map(([key]) => (
+                      <SubteamPill
+                        categoryKey={key}
+                        includeDataSubteam
                         key={key}
-                        onClick={(e) => {
-                          const pill = e.currentTarget;
-                          pill.classList.toggle("selected");
-                          pill.setAttribute(
-                            "aria-pressed",
-                            pill.classList.contains("selected")
-                              ? "true"
-                              : "false"
-                          );
-                        }}
-                        style={
-                          {
-                            "--pill-bg": hexToRgba(c.color, 0.16),
-                            "--pill-border": hexToRgba(c.color, 0.55),
-                            "--pill-glow": hexToRgba(c.color, 0.4),
-                          } as React.CSSProperties
-                        }
-                        type="button"
-                      >
-                        <span
-                          className="cat-dot"
-                          style={{ background: c.color, height: 7, width: 7 }}
-                        />
-                        {esc(c.label)}
-                      </button>
+                        toggleOnClick
+                      />
                     ))}
                   </div>
                 </div>

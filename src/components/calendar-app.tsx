@@ -1,23 +1,20 @@
 "use client";
 
 import { useAuth, useClerk, useUser } from "@clerk/nextjs";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  addDays,
-  atTime,
-  CATEGORIES,
   type CalendarAnnouncement,
   type CalendarEvent,
-  type CategoryKey,
   type ConfirmationDialog,
-  isEventVisible,
-  normalizeSubteamName,
   stripTime,
   type ViewTransition,
 } from "@/lib/calendar/calendar";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import { useCalendarData } from "../hooks/use-calendar-data";
+import { useComposerSubmit } from "../hooks/use-composer-submit";
+import { useSubteamFilter } from "../hooks/use-subteam-filter";
 import { AnnouncementsView } from "./calendar/AnnouncementsView";
 import { BottomNav } from "./calendar/BottomNav";
 import { ComposerModal } from "./calendar/ComposerModal";
@@ -33,12 +30,6 @@ export default function CalendarApp() {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
   const clerk = useClerk();
-
-  const currentUser = useQuery(api.users.currentUser);
-  const ensureUser = useMutation(api.users.ensureUser);
-  const convexSubteams = useQuery(api.subteams.list);
-  const eventTypes = useQuery(api.eventTypes.list);
-  const convexAnnouncements = useQuery(api.announcements.list);
 
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signup");
   const [view, setView] = useState<"month" | "week" | "announcements">("month");
@@ -58,11 +49,6 @@ export default function CalendarApp() {
     "event"
   );
   const [composerError, setComposerError] = useState<string | null>(null);
-  const [subteamFilter, setSubteamFilter] = useState<Set<CategoryKey>>(
-    new Set(Object.keys(CATEGORIES) as CategoryKey[])
-  );
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filtersJustOpened, setFiltersJustOpened] = useState(false);
   const [swipeEnter, setSwipeEnter] = useState<
     null | "from-left" | "from-right"
   >(null);
@@ -70,106 +56,24 @@ export default function CalendarApp() {
   const [confirmation, setConfirmation] = useState<ConfirmationDialog | null>(
     null
   );
+  const {
+    filtersJustOpened,
+    filtersOpen,
+    handleToggleFilters,
+    handleToggleSubteamFilter,
+    subteamFilter,
+  } = useSubteamFilter();
 
   const today = useMemo(() => stripTime(new Date()), []);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      ensureUser();
-    }
-  }, [isSignedIn, ensureUser]);
-
-  const eventQueryRange = useMemo(() => {
-    let start: Date;
-    let end: Date;
-    if (view === "month") {
-      const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
-      start = addDays(first, -first.getDay());
-      end = addDays(start, 41);
-    } else {
-      start = addDays(today, -14);
-      end = addDays(today, 21);
-    }
-    return { end: end.getTime(), start: start.getTime() };
-  }, [view, cursor, today]);
-
-  const convexEvents = useQuery(api.events.listByRange, eventQueryRange);
-
-  const subteamIdToKey = useMemo(() => {
-    const map = new Map<Id<"subteams">, CategoryKey>();
-    if (convexSubteams) {
-      for (const st of convexSubteams) {
-        const key = normalizeSubteamName(st.subteamName);
-        if (key) {
-          map.set(st._id, key);
-        }
-      }
-    }
-    return map;
-  }, [convexSubteams]);
-
-  const keyToSubteamId = useMemo(() => {
-    const map = new Map<CategoryKey, Id<"subteams">>();
-    if (convexSubteams) {
-      for (const st of convexSubteams) {
-        const key = normalizeSubteamName(st.subteamName);
-        if (key && !map.has(key)) {
-          map.set(key, st._id);
-        }
-      }
-    }
-    return map;
-  }, [convexSubteams]);
-
-  const defaultEventTypeId = useMemo(() => {
-    if (!eventTypes || eventTypes.length === 0) {
-      return null;
-    }
-    const standard = eventTypes.find((et) =>
-      et.name.toLowerCase().includes("standard")
-    );
-    return standard?._id ?? eventTypes[0]._id;
-  }, [eventTypes]);
-
-  const events = useMemo<CalendarEvent[]>(() => {
-    if (!convexEvents) {
-      return [];
-    }
-    return convexEvents.map((e) => {
-      const subteams = e.subteams
-        .map((id) => subteamIdToKey.get(id))
-        .filter(Boolean) as CategoryKey[];
-      return {
-        allDay: e.allDay,
-        createdAt: new Date(e.updatedAt),
-        end: new Date(e.endTime),
-        id: e._id,
-        info: e.info ?? undefined,
-        location: e.location,
-        organizer: e.organizer,
-        start: new Date(e.startTime),
-        subteams,
-        title: e.title,
-      };
-    });
-  }, [convexEvents, subteamIdToKey]);
-
-  const visibleEvents = useMemo(
-    () => events.filter((event) => isEventVisible(event, subteamFilter)),
-    [events, subteamFilter]
-  );
-
-  const announcements = useMemo<CalendarAnnouncement[]>(() => {
-    if (!convexAnnouncements) {
-      return [];
-    }
-    return convexAnnouncements.map((a) => ({
-      date: new Date(a.updatedAt),
-      id: a._id,
-      snippet: a.snippet,
-      title: a.title,
-    }));
-  }, [convexAnnouncements]);
+  const {
+    announcements,
+    currentUser,
+    defaultEventTypeId,
+    events,
+    keyToSubteamId,
+    visibleEvents,
+  } = useCalendarData({ cursor, isSignedIn, subteamFilter, today, view });
 
   const selectedEvent = useMemo(() => {
     if (!selectedEventId) {
@@ -182,8 +86,6 @@ export default function CalendarApp() {
     );
   }, [selectedEventId, events, announcements]);
 
-  const createEventMutation = useMutation(api.events.create);
-  const createAnnouncementMutation = useMutation(api.announcements.create);
   const removeEventMutation = useMutation(api.events.remove);
   const removeAnnouncementMutation = useMutation(api.announcements.remove);
 
@@ -273,51 +175,6 @@ export default function CalendarApp() {
     [handleCloseModal, removeAnnouncementMutation, removeEventMutation]
   );
 
-  const handleToggleSubteamFilter = useCallback((key: CategoryKey) => {
-    setSubteamFilter((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleToggleFilters = useCallback(() => {
-    setFiltersOpen((open) => {
-      const next = !open;
-      setFiltersJustOpened(next);
-      return next;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!filtersOpen) {
-      return;
-    }
-
-    const handleOutsidePointerDown = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Element)) {
-        return;
-      }
-      if (
-        target.closest("#subteam-filter-popover") ||
-        target.closest(".filter-btn")
-      ) {
-        return;
-      }
-      setFiltersOpen(false);
-      setFiltersJustOpened(false);
-    };
-
-    document.addEventListener("pointerdown", handleOutsidePointerDown);
-    return () =>
-      document.removeEventListener("pointerdown", handleOutsidePointerDown);
-  }, [filtersOpen]);
-
   const handlePrevMonth = useCallback(() => {
     setCursor(
       (current) => new Date(current.getFullYear(), current.getMonth() - 1, 1)
@@ -346,136 +203,14 @@ export default function CalendarApp() {
     setSwipeEnter("from-right");
   }, []);
 
-  const handleSubmitComposer = useCallback(async () => {
-    const titleEl = document.getElementById(
-      "cf-title"
-    ) as HTMLInputElement | null;
-    const title = (titleEl?.value || "").trim();
-    if (!title) {
-      setComposerError("Please enter a title.");
-      return;
-    }
-
-    if (composerMode === "event") {
-      const selectedPills = Array.from(
-        document.querySelectorAll(".subteam-pill.selected")
-      ).map((btn) => (btn as HTMLElement).dataset.subteam as CategoryKey);
-      if (!selectedPills.length) {
-        setComposerError("Please select at least one subteam.");
-        return;
-      }
-
-      const startDateStr = (
-        document.getElementById("cf-start-date") as HTMLInputElement
-      )?.value;
-      const endDateStr =
-        (document.getElementById("cf-end-date") as HTMLInputElement)?.value ||
-        startDateStr;
-      if (!(startDateStr && endDateStr)) {
-        setComposerError("Please choose a start and end date.");
-        return;
-      }
-
-      const [sy, smo, sd] = startDateStr.split("-").map(Number);
-      const [ey, emo, ed] = endDateStr.split("-").map(Number);
-      const startDateObj = new Date(sy, smo - 1, sd);
-      const endDateObj = new Date(ey, emo - 1, ed);
-      if (endDateObj < startDateObj) {
-        setComposerError("End date can't be before the start date.");
-        return;
-      }
-
-      const allDayToggle = document.getElementById("cf-allday");
-      const allDay = allDayToggle?.classList.contains("selected") ?? false;
-
-      let start: Date;
-      let end: Date;
-      if (allDay) {
-        start = stripTime(startDateObj);
-        end = stripTime(endDateObj);
-      } else {
-        const startTimeStr =
-          (document.getElementById("cf-start-time") as HTMLInputElement)
-            ?.value || "09:00";
-        const endTimeStr =
-          (document.getElementById("cf-end-time") as HTMLInputElement)?.value ||
-          "10:00";
-        const [sh, smin] = startTimeStr.split(":").map(Number);
-        const [eh, emin] = endTimeStr.split(":").map(Number);
-        start = atTime(startDateObj, sh, smin);
-        end = atTime(endDateObj, eh, emin);
-        if (end <= start) {
-          setComposerError("End time must be after the start time.");
-          return;
-        }
-      }
-
-      const location = (
-        (document.getElementById("cf-location") as HTMLInputElement)?.value ||
-        ""
-      ).trim();
-      const organizer = (
-        (document.getElementById("cf-organizer") as HTMLInputElement)?.value ||
-        ""
-      ).trim();
-      const info = (
-        (document.getElementById("cf-info") as HTMLTextAreaElement)?.value || ""
-      ).trim();
-      const subteamIds = selectedPills
-        .map((key) => keyToSubteamId.get(key))
-        .filter(Boolean) as Id<"subteams">[];
-
-      if (!defaultEventTypeId) {
-        setComposerError("Event types not loaded yet. Please try again.");
-        return;
-      }
-
-      try {
-        await createEventMutation({
-          allDay,
-          endTime: end.getTime(),
-          eventTypeId: defaultEventTypeId,
-          info: info || undefined,
-          location: location || "",
-          organizer: organizer || "",
-          startTime: start.getTime(),
-          subteams: subteamIds,
-          title,
-        });
-        setCursor(new Date(start.getFullYear(), start.getMonth(), 1));
-        setComposerOpen(false);
-        setComposerError(null);
-      } catch (err) {
-        setComposerError(
-          err instanceof Error ? err.message : "Failed to create event"
-        );
-      }
-    } else {
-      const snippet = (
-        (document.getElementById("cf-snippet") as HTMLTextAreaElement)?.value ||
-        ""
-      ).trim();
-      if (!snippet) {
-        setComposerError("Please add a message for the announcement.");
-        return;
-      }
-      try {
-        await createAnnouncementMutation({ snippet, title });
-        setComposerOpen(false);
-        setComposerError(null);
-      } catch (err) {
-        setComposerError(
-          err instanceof Error ? err.message : "Failed to post announcement"
-        );
-      }
-    }
-  }, [
-    composerMode,
-    keyToSubteamId,
+  const handleSubmitComposer = useComposerSubmit({
     defaultEventTypeId,
-    createEventMutation,
-    createAnnouncementMutation,
-  ]);
+    keyToSubteamId,
+    mode: composerMode,
+    setComposerError,
+    setComposerOpen,
+    setCursor,
+  });
 
   const handleSignOut = useCallback(() => {
     setConfirmation({
@@ -499,12 +234,6 @@ export default function CalendarApp() {
       return () => clearTimeout(timer);
     }
   }, [viewTransition]);
-  useEffect(() => {
-    if (filtersJustOpened) {
-      const timer = setTimeout(() => setFiltersJustOpened(false), 200);
-      return () => clearTimeout(timer);
-    }
-  }, [filtersJustOpened]);
   useEffect(() => {
     if (dayListJustOpened) {
       const timer = setTimeout(() => setDayListJustOpened(false), 200);
