@@ -2152,12 +2152,6 @@ select.form-input {
   will-change: transform, opacity;
 }
 
-[data-swipe-surface].is-swipe-settling {
-  transition:
-    transform 180ms cubic-bezier(0.22, 0.72, 0.28, 1),
-    opacity 180ms ease;
-}
-
 [data-swipe-surface].swipe-enter-from-right {
   animation: swipe-enter-right 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2500,55 +2494,6 @@ select.form-input {
 
   .week-wrap {
     padding: 4px 10px 104px;
-  }
-
-  .mobile-week-wrap {
-    padding: 4px 10px 104px !important;
-  }
-
-  .mobile-week-nav {
-    display: grid !important;
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 12px !important;
-  }
-
-  .mobile-week-date {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 15px !important;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  .mobile-week-nav .nav-arrow {
-    width: 30px;
-    height: 30px;
-  }
-
-  .mobile-week-shell {
-    width: 100%;
-    max-width: 440px !important;
-  }
-
-  .mobile-week-grid .today-col,
-  .mobile-week-grid .day-col {
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  .mobile-week-grid .time-gutter {
-    flex-basis: 38px;
-    width: 38px;
-  }
-
-  .mobile-week-grid .hour-label {
-    right: auto;
-    left: 14px;
-    text-align: center;
-    transform: translate(-50%, -50%);
   }
 
   .bottom-nav {

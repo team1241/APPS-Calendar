@@ -440,27 +440,6 @@ function SubteamTags({ event }: { event: CalendarEvent }) {
   );
 }
 
-function _IconCalendar({ size = 18 }: { size?: number }) {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height={size}
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      viewBox="0 0 24 24"
-      width={size}
-    >
-      <rect height="18" rx="2" width="18" x="3" y="4" />
-      <line x1="16" x2="16" y1="2" y2="6" />
-      <line x1="8" x2="8" y1="2" y2="6" />
-      <line x1="3" x2="21" y1="10" y2="10" />
-    </svg>
-  );
-}
-
 function IconChevronLeft({ size = 15 }: { size?: number }) {
   return (
     <svg
@@ -1668,8 +1647,6 @@ function WeekView({
 }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 760;
   const EVENT_LANE_H = 23;
-  const _MOBILE_GUTTER_WIDTH = 38;
-  const _MOBILE_COLUMN_GAP = 0;
 
   const timedEventsFor = useCallback(
     (date: Date) =>
@@ -1832,7 +1809,6 @@ function WeekView({
 
   if (isMobile) {
     const date = addDays(today, mobileWeekOffset);
-    const _segments = buildMultiDaySegments(multiDayEvents, date, date, events);
     return (
       <div
         className={`view-slide${viewTransition ? ` view-transition-${viewTransition}` : ""}`}
