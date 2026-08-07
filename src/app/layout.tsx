@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./calendar-baseline.css";
+import "./visual-overrides.css";
 import { RootProviders } from "@/components/providers/root-providers";
 
 export const metadata: Metadata = {
