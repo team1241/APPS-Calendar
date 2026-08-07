@@ -1,13 +1,13 @@
 "use client";
 
+import { ChevronRightIcon, Megaphone01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useMemo } from "react";
 import {
   type CalendarAnnouncement,
   fmtTime,
   type ViewTransition,
 } from "@/lib/calendar/calendar";
-import { IconChevronRight } from "./IconChevronRight";
-import { IconMegaphone } from "./IconMegaphone";
 
 export function AnnouncementsView({
   announcements,
@@ -34,7 +34,7 @@ export function AnnouncementsView({
         .join(" ")}
     >
       <div className="ann-header">
-        <IconMegaphone />
+        <HugeiconsIcon icon={Megaphone01Icon} size={20} strokeWidth={2} />
         <h1>Announcements</h1>
       </div>
       <div className="ann-list">
@@ -59,7 +59,11 @@ export function AnnouncementsView({
               </span>
             </div>
             <span className="chevron">
-              <IconChevronRight />
+              <HugeiconsIcon
+                icon={ChevronRightIcon}
+                size={15}
+                strokeWidth={2}
+              />
             </span>
           </button>
         ))}

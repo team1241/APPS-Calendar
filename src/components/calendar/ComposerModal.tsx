@@ -1,4 +1,6 @@
 "use client";
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useLayoutEffect, useRef } from "react";
 import {
   CATEGORIES,
@@ -6,7 +8,6 @@ import {
   positionPillIndicator,
   toDateInputValue,
 } from "@/lib/calendar/calendar";
-import { IconX } from "./IconX";
 import { SubteamPill } from "./SubteamPill";
 
 export function ComposerModal({
@@ -107,7 +108,7 @@ export function ComposerModal({
               title="Close"
               type="button"
             >
-              <IconX />
+              <HugeiconsIcon icon={Cancel01Icon} size={17} strokeWidth={2} />
             </button>
           </div>
           <h2>{mode === "event" ? "New event" : "New announcement"}</h2>

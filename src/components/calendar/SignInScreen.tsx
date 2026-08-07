@@ -1,10 +1,11 @@
 "use client";
 
 import { useSignIn, useSignUp } from "@clerk/nextjs/legacy";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
-import { IconArrowRight } from "./IconArrowRight";
 
 export function SignInScreen({
   authMode,
@@ -192,7 +193,12 @@ export function SignInScreen({
                   disabled={isSubmitting}
                   type="submit"
                 >
-                  {isSubmitting ? "Verifying..." : "Verify"} <IconArrowRight />
+                  {isSubmitting ? "Verifying..." : "Verify"}{" "}
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    size={16}
+                    strokeWidth={2}
+                  />
                 </button>
               </>
             ) : null}
@@ -248,7 +254,12 @@ export function SignInScreen({
                   disabled={isSubmitting}
                   type="submit"
                 >
-                  {isSubmitting ? "Creating..." : "Continue"} <IconArrowRight />
+                  {isSubmitting ? "Creating..." : "Continue"}{" "}
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    size={16}
+                    strokeWidth={2}
+                  />
                 </button>
                 <div className="signin-alt-row">
                   Already have an account?{" "}
@@ -296,7 +307,11 @@ export function SignInScreen({
                   type="submit"
                 >
                   {isSubmitting ? "Signing in..." : "Continue"}{" "}
-                  <IconArrowRight />
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    size={16}
+                    strokeWidth={2}
+                  />
                 </button>
                 <div className="signin-alt-row">
                   Don&apos;t have an account?{" "}

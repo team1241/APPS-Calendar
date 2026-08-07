@@ -1,5 +1,7 @@
 "use client";
 
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useRef } from "react";
 import {
   type CalendarEvent,
@@ -13,7 +15,6 @@ import {
   sameDay,
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
-import { IconX } from "./IconX";
 
 export function DayListModal({
   dateKeyStr,
@@ -86,7 +87,7 @@ export function DayListModal({
             title="Close"
             type="button"
           >
-            <IconX />
+            <HugeiconsIcon icon={Cancel01Icon} size={17} strokeWidth={2} />
           </button>
         </div>
         <div className="list" ref={listRef}>

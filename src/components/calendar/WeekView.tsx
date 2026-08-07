@@ -1,4 +1,6 @@
 "use client";
+import { ChevronLeftIcon, ChevronRightIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type React from "react";
 import { useCallback, useMemo } from "react";
 import {
@@ -25,8 +27,6 @@ import {
   WEEK_HEADER_HEIGHT,
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
-import { IconChevronLeft } from "./IconChevronLeft";
-import { IconChevronRight } from "./IconChevronRight";
 
 export function WeekView({
   events,
@@ -250,7 +250,7 @@ export function WeekView({
             onClick={onWeekPrev}
             type="button"
           >
-            <IconChevronLeft />
+            <HugeiconsIcon icon={ChevronLeftIcon} size={15} strokeWidth={2} />
           </button>
           <div className="mobile-week-date">
             {date.toLocaleDateString("en-US", {
@@ -265,7 +265,7 @@ export function WeekView({
             onClick={onWeekNext}
             type="button"
           >
-            <IconChevronRight />
+            <HugeiconsIcon icon={ChevronRightIcon} size={15} strokeWidth={2} />
           </button>
         </div>
         <div className="mobile-week-shell">

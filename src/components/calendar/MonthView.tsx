@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronLeftIcon, ChevronRightIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useMemo } from "react";
 import {
   addDays,
@@ -18,8 +20,6 @@ import {
   type ViewTransition,
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
-import { IconChevronLeft } from "./IconChevronLeft";
-import { IconChevronRight } from "./IconChevronRight";
 
 export function MonthView({
   cursor,
@@ -121,7 +121,7 @@ export function MonthView({
             onClick={onPrevMonth}
             type="button"
           >
-            <IconChevronLeft />
+            <HugeiconsIcon icon={ChevronLeftIcon} size={15} strokeWidth={2} />
           </button>
           <button className="today-btn" onClick={onToday} type="button">
             Today
@@ -132,7 +132,7 @@ export function MonthView({
             onClick={onNextMonth}
             type="button"
           >
-            <IconChevronRight />
+            <HugeiconsIcon icon={ChevronRightIcon} size={15} strokeWidth={2} />
           </button>
         </div>
       </div>

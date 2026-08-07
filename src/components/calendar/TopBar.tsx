@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  Logout01Icon,
+  PlusSignIcon,
+  SlidersHorizontalIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import {
   CATEGORIES,
@@ -11,9 +17,6 @@ import {
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
 import { FilterPopover } from "./FilterPopover";
-import { IconFilter } from "./IconFilter";
-import { IconLogout } from "./IconLogout";
-import { IconPlus } from "./IconPlus";
 
 export function TopBar({
   events,
@@ -88,7 +91,11 @@ export function TopBar({
             title="Filter by subteam"
             type="button"
           >
-            <IconFilter />
+            <HugeiconsIcon
+              icon={SlidersHorizontalIcon}
+              size={16}
+              strokeWidth={2}
+            />
             {isFilterActive && <span className="filter-dot" />}
           </button>
           {filtersOpen && (
@@ -106,11 +113,12 @@ export function TopBar({
             title="Create event or announcement"
             type="button"
           >
-            <IconPlus />
+            <HugeiconsIcon icon={PlusSignIcon} size={18} strokeWidth={2} />
           </button>
         ) : null}
         <button className="signout-btn" onClick={onSignOut} type="button">
-          <IconLogout /> Sign out
+          <HugeiconsIcon icon={Logout01Icon} size={15} strokeWidth={2} /> Sign
+          out
         </button>
         <div className="avatar">{userName.charAt(0).toUpperCase()}</div>
       </div>

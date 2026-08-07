@@ -1,4 +1,13 @@
 "use client";
+import {
+  Cancel01Icon,
+  ChevronLeftIcon,
+  Clock01Icon,
+  Delete02Icon,
+  Location01Icon,
+  User02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type React from "react";
 import {
   CATEGORIES,
@@ -7,12 +16,6 @@ import {
   fmtTime,
   getEventColors,
 } from "@/lib/calendar/calendar";
-import { IconChevronLeft } from "./IconChevronLeft";
-import { IconClock } from "./IconClock";
-import { IconMapPin } from "./IconMapPin";
-import { IconTrash } from "./IconTrash";
-import { IconUser } from "./IconUser";
-import { IconX } from "./IconX";
 import { SubteamTags } from "./SubteamTags";
 
 export function EventModal({
@@ -105,7 +108,11 @@ export function EventModal({
                   title="Back to day events"
                   type="button"
                 >
-                  <IconChevronLeft />
+                  <HugeiconsIcon
+                    icon={ChevronLeftIcon}
+                    size={15}
+                    strokeWidth={2}
+                  />
                 </button>
               )}
               {chip}
@@ -117,24 +124,28 @@ export function EventModal({
               title="Close"
               type="button"
             >
-              <IconX />
+              <HugeiconsIcon icon={Cancel01Icon} size={17} strokeWidth={2} />
             </button>
           </div>
           <h2>{event.title}</h2>
           <div className="info-rows">
             <div className="info-row">
-              <IconClock />
+              <HugeiconsIcon icon={Clock01Icon} size={14} strokeWidth={2} />
               <span>{timeStr}</span>
             </div>
             {!isAnnouncement && calEvent.location && (
               <div className="info-row">
-                <IconMapPin />
+                <HugeiconsIcon
+                  icon={Location01Icon}
+                  size={14}
+                  strokeWidth={2}
+                />
                 <span>{calEvent.location}</span>
               </div>
             )}
             {!isAnnouncement && calEvent.organizer && (
               <div className="info-row">
-                <IconUser />
+                <HugeiconsIcon icon={User02Icon} size={14} strokeWidth={2} />
                 <span>{calEvent.organizer}</span>
               </div>
             )}
@@ -153,7 +164,7 @@ export function EventModal({
                 title="Delete"
                 type="button"
               >
-                <IconTrash />
+                <HugeiconsIcon icon={Delete02Icon} size={16} strokeWidth={2} />
               </button>
             </div>
           )}
