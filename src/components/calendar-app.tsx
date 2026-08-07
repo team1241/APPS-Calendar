@@ -974,13 +974,12 @@ function SignInScreen({
             <Image
               alt="THEORY6 team logo"
               height={18}
-              src="/Circle_Logo_Theory.svg"
+              src="/Circle_Logo_Theory.png"
               width={18}
             />
           </span>
           <span>FRC 1241</span>
         </div>
-        <div className="micro-label">Preview</div>
       </div>
       <div className="signin-card-wrap">
         <div className="signin-card">
@@ -1189,7 +1188,7 @@ function TopBar({
           <Image
             alt="THEORY6 team logo"
             height={18}
-            src="/Circle_Logo_Theory.svg"
+            src="/Circle_Logo_Theory.png"
             width={18}
           />
         </span>
