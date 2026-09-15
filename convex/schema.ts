@@ -24,8 +24,10 @@ export default defineSchema({
     .index("by_email", ["email"]),
 
   events: defineTable({
+    title: v.string(),
     startTime: v.number(),
     endTime: v.number(),
+    allDay: v.boolean(),
     eventTypeId: v.id("eventTypes"),
     subteams: v.array(v.id("subteams")),
     organizer: v.string(),
@@ -35,6 +37,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_startTime", ["startTime"])
+    .index("by_title", ["title"])
     .index("by_eventTypeId", ["eventTypeId"])
     .index("by_author", ["author"]),
 
@@ -59,7 +62,16 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_userId", ["userId"]),
 
-  // Example values seen in the source spreadsheet: "holidays",
+  announcements: defineTable({
+    title: v.string(),
+    snippet: v.string(),
+    author: v.id("users"),
+    updatedAt: v.number(),
+  })
+    .index("by_author", ["author"])
+    .index("by_updatedAt", ["updatedAt"]),
+
+  // Example values seen in the original spreadsheet: "holidays",
   // "standard events", "robotics meetings", "announcements".
   // Holiday-type events are populated from an external calendar library
   // and stored as normal rows in `events`.
