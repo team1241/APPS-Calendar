@@ -33,3 +33,112 @@
   border-color: rgba(240, 163, 163, 0.5);
   box-shadow: inset 0 0 0 1px rgba(240, 163, 163, 0.5);
 }
+.carousel-mode .backdrop,
+.carousel-mode .top-glow {
+  display: none;
+}
+
+.carousel-mode .content {
+  height: 100dvh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.carousel-mode .month-wrap,
+.carousel-mode .week-wrap,
+.carousel-mode .ann-wrap {
+  box-sizing: border-box;
+  max-width: 1400px;
+  height: 100dvh;
+  min-height: 0;
+  padding: 24px 20px 16px;
+  overflow: hidden;
+}
+
+.carousel-mode .ann-wrap {
+  max-width: 1000px;
+}
+
+.carousel-mode .ann-list {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.carousel-mode .view-slide {
+  contain: layout paint;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.carousel-mode .view-slide.view-transition-from-left,
+.carousel-mode .view-slide.view-transition-from-right {
+  animation-duration: 420ms;
+}
+
+.carousel-mode .month-header,
+.carousel-mode .week-header {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.carousel-mode .month-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.carousel-mode .month-row {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.carousel-mode .month-row-grid,
+.carousel-mode .day-cell {
+  height: 100%;
+}
+
+.carousel-mode .day-cell {
+  aspect-ratio: auto;
+}
+
+.carousel-mode .week-row {
+  --week-hour-height: max(18px, calc((100dvh - 210px) / 14));
+  --week-header-height: 54px;
+  height: calc(100dvh - 118px);
+  overflow: hidden;
+}
+
+.carousel-mode .week-wrap .day-col-body {
+  height: calc(var(--week-hour-height) * 14) !important;
+}
+
+.carousel-mode .mobile-week-wrap {
+  box-sizing: border-box;
+  height: 100dvh;
+  padding: 16px 10px;
+  overflow: hidden;
+}
+
+.carousel-mode .mobile-week-grid {
+  --week-hour-height: max(18px, calc((100dvh - 190px) / 14)) !important;
+}
+
+.carousel-mode .mobile-week-grid .day-col-body {
+  height: calc(var(--week-hour-height) * 14) !important;
+}
+
+.carousel-btn {
+  padding: 6px 10px;
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  transition:
+    background 150ms ease-out,
+    color 150ms ease-out;
+}
+
+.carousel-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}

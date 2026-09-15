@@ -33,6 +33,7 @@ export default function CalendarApp() {
 
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signup");
   const [view, setView] = useState<"month" | "week" | "announcements">("month");
+  const [carouselMode, setCarouselMode] = useState(false);
   const [cursor, setCursor] = useState(
     () => new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
@@ -230,16 +231,44 @@ export default function CalendarApp() {
   }, [swipeEnter]);
   useEffect(() => {
     if (viewTransition) {
-      const timer = setTimeout(() => setViewTransition(null), 340);
+      const timer = setTimeout(
+        () => setViewTransition(null),
+        carouselMode ? 460 : 340
+      );
       return () => clearTimeout(timer);
     }
-  }, [viewTransition]);
+  }, [carouselMode, viewTransition]);
   useEffect(() => {
     if (dayListJustOpened) {
       const timer = setTimeout(() => setDayListJustOpened(false), 200);
       return () => clearTimeout(timer);
     }
   }, [dayListJustOpened]);
+
+  useEffect(() => {
+    if (!carouselMode) {
+      return;
+    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setCarouselMode(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [carouselMode]);
+
+  useEffect(() => {
+    if (!carouselMode) {
+      return;
+    }
+    const timer = window.setInterval(() => {
+      const nextView =
+        view === "month" ? "week" : view === "week" ? "announcements" : "month";
+      handleSetView(nextView);
+    }, 15_000);
+    return () => window.clearInterval(timer);
+  }, [carouselMode, handleSetView, view]);
 
   if (!isLoaded) {
     return (
@@ -281,7 +310,7 @@ export default function CalendarApp() {
   const isAdmin = currentUser?.isAdmin ?? false;
 
   return (
-    <div id="app">
+    <div className={carouselMode ? "carousel-mode" : undefined} id="app">
       <div className="backdrop">
         <div className="grad" />
         <div className="blob1" />
@@ -290,19 +319,25 @@ export default function CalendarApp() {
       </div>
       <div className="content">
         <div className="top-glow" />
-        <TopBar
-          events={events}
-          filtersJustOpened={filtersJustOpened}
-          filtersOpen={filtersOpen}
-          isAdmin={isAdmin}
-          onOpenComposer={handleOpenComposer}
-          onOpenEvent={handleOpenEvent}
-          onSignOut={handleSignOut}
-          onToggleFilters={handleToggleFilters}
-          onToggleSubteam={handleToggleSubteamFilter}
-          subteamFilter={subteamFilter}
-          userName={userName}
-        />
+        {!carouselMode && (
+          <TopBar
+            events={events}
+            filtersJustOpened={filtersJustOpened}
+            filtersOpen={filtersOpen}
+            isAdmin={isAdmin}
+            onOpenComposer={handleOpenComposer}
+            onOpenEvent={handleOpenEvent}
+            onSignOut={handleSignOut}
+            onToggleCarousel={() => {
+              setCarouselMode(true);
+              setView("month");
+            }}
+            onToggleFilters={handleToggleFilters}
+            onToggleSubteam={handleToggleSubteamFilter}
+            subteamFilter={subteamFilter}
+            userName={userName}
+          />
+        )}
         {view === "month" && (
           <MonthView
             cursor={cursor}
@@ -336,7 +371,7 @@ export default function CalendarApp() {
             viewTransition={viewTransition}
           />
         )}
-        <BottomNav onSetView={handleSetView} view={view} />
+        {!carouselMode && <BottomNav onSetView={handleSetView} view={view} />}
         {dayListDate && (
           <DayListModal
             animate={dayListJustOpened}

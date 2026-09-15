@@ -29,6 +29,7 @@ export function TopBar({
   onOpenComposer,
   onSignOut,
   onOpenEvent,
+  onToggleCarousel,
   userName,
 }: {
   events: CalendarEvent[];
@@ -41,6 +42,7 @@ export function TopBar({
   onOpenComposer: () => void;
   onSignOut: () => void;
   onOpenEvent: (id: string) => void;
+  onToggleCarousel: () => void;
   userName: string;
 }) {
   const now = new Date();
@@ -82,6 +84,14 @@ export function TopBar({
         <div />
       )}
       <div className="topbar-actions">
+        <button
+          className="carousel-btn"
+          onClick={onToggleCarousel}
+          title="Start carousel mode"
+          type="button"
+        >
+          Carousel
+        </button>
         <div className="filter-menu">
           <button
             className={["icon-btn", "filter-btn", filtersOpen && "active"]
