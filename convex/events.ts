@@ -1,17 +1,29 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAuthedUser } from "./users";
+import { requireAdmin, requireAuthedUser } from "./users";
 
 export const listByRange = query({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const startingInRange = await ctx.db
       .query("events")
       .withIndex("by_startTime", (q) =>
         q.gte("startTime", args.start).lte("startTime", args.end),
       )
       .order("asc")
       .take(200);
+
+    const endingAfterRangeStart = await ctx.db
+      .query("events")
+      .withIndex("by_startTime", (q) => q.lt("startTime", args.start))
+      .order("desc")
+      .take(200);
+
+    return [...endingAfterRangeStart, ...startingInRange].filter(
+      (event, index, all) =>
+        event.endTime >= args.start &&
+        all.findIndex((candidate) => candidate._id === event._id) === index,
+    );
   },
 });
 
@@ -24,8 +36,10 @@ export const get = query({
 
 export const create = mutation({
   args: {
+    title: v.string(),
     startTime: v.number(),
     endTime: v.number(),
+    allDay: v.boolean(),
     eventTypeId: v.id("eventTypes"),
     subteams: v.array(v.id("subteams")),
     organizer: v.string(),
@@ -45,8 +59,10 @@ export const create = mutation({
 export const update = mutation({
   args: {
     eventId: v.id("events"),
+    title: v.optional(v.string()),
     startTime: v.optional(v.number()),
     endTime: v.optional(v.number()),
+    allDay: v.optional(v.boolean()),
     eventTypeId: v.optional(v.id("eventTypes")),
     subteams: v.optional(v.array(v.id("subteams"))),
     organizer: v.optional(v.string()),
@@ -69,12 +85,9 @@ export const update = mutation({
 export const remove = mutation({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
-    const user = await requireAuthedUser(ctx);
+    await requireAdmin(ctx);
     const event = await ctx.db.get("events", args.eventId);
     if (!event) return null;
-    if (event.author !== user._id && !user.isAdmin) {
-      throw new Error("Not authorized to delete this event");
-    }
     await ctx.db.delete("events", args.eventId);
     return null;
   },

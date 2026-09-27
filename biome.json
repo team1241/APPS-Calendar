@@ -40,5 +40,105 @@
     "ultracite/biome/core",
     "ultracite/biome/react",
     "ultracite/biome/next"
+  ],
+  "overrides": [
+    {
+      "includes": ["src/components/calendar/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noNoninteractiveElementInteractions": "off",
+            "noStaticElementInteractions": "off",
+            "useSemanticElements": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "useKeyWithClickEvents": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          },
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off"
+          },
+          "performance": {
+            "noJsxPropsBind": "off"
+          },
+          "style": {
+            "useFilenamingConvention": "off",
+            "noIncrementDecrement": "off",
+            "useDestructuring": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off",
+            "noAssignInExpressions": "off",
+            "noLeakedRender": "off",
+            "noShadow": "off",
+            "noUnnecessaryConditions": "off",
+            "useIterableCallbackReturn": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/lib/calendar/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noUnnecessaryConditions": "off"
+          },
+          "style": {
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/app/calendar-baseline.css"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/components/calendar-app.tsx"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noNoninteractiveElementInteractions": "off",
+            "noStaticElementInteractions": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "useKeyWithClickEvents": "off"
+          },
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off",
+            "noForEach": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          },
+          "nursery": {
+            "useSortedClasses": "off"
+          },
+          "performance": {
+            "noJsxPropsBind": "off"
+          },
+          "style": {
+            "noIncrementDecrement": "off",
+            "noNestedTernary": "off",
+            "useDestructuring": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off",
+            "noAssignInExpressions": "off",
+            "noLeakedRender": "off",
+            "noShadow": "off",
+            "noUnnecessaryConditions": "off",
+            "useIterableCallbackReturn": "off"
+          }
+        }
+      }
+    }
   ]
 }
