@@ -1,5 +1,6 @@
 import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "../_generated/server";
+import { getUserRole } from "./userAccess";
 
 export async function getAuthedUser(
   ctx: QueryCtx | MutationCtx,
@@ -31,6 +32,8 @@ export async function requireAdmin(
   ctx: QueryCtx | MutationCtx,
 ): Promise<Doc<"users">> {
   const user = await requireAuthedUser(ctx);
-  if (!user.isAdmin) throw new Error("Admin access required");
+  if (getUserRole(user) === "member") {
+    throw new Error("Admin access required");
+  }
   return user;
 }

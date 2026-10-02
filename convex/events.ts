@@ -1,6 +1,7 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin, requireAuthedUser } from "./users";
+import { getUserRole } from "./lib/userAccess";
 
 export const listByRange = query({
   args: { start: v.number(), end: v.number() },
@@ -74,7 +75,7 @@ export const update = mutation({
     const { eventId, ...patch } = args;
     const event = await ctx.db.get("events", eventId);
     if (!event) throw new Error("Event not found");
-    if (event.author !== user._id && !user.isAdmin) {
+    if (event.author !== user._id && getUserRole(user) === "member") {
       throw new Error("Not authorized to edit this event");
     }
     await ctx.db.patch("events", eventId, { ...patch, updatedAt: Date.now() });
