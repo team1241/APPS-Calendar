@@ -16,6 +16,15 @@ export default defineSchema({
     ),
     subteams: v.array(v.id("subteams")),
     clerkId: v.string(),
+    // Optional while existing users are backfilled as Mentors.
+    // `isAdmin` remains during the compatibility window.
+    role: v.optional(
+      v.union(
+        v.literal("member"),
+        v.literal("admin"),
+        v.literal("mentor"),
+      ),
+    ),
     isAdmin: v.boolean(),
     isSignupComplete: v.boolean(),
     updatedAt: v.number(),
