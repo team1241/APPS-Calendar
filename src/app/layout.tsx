@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./calendar-baseline.css";
-import "./visual-overrides.css";
+import "./styles/modal-overrides.css";
+import "./styles/carousel-mode.css";
+import "./styles/topbar-profile.css";
+import "./styles/admin-shell.css";
+import "./styles/admin-controls.css";
+import "./styles/admin-responsive.css";
 import { RootProviders } from "@/components/providers/root-providers";
 
 export const metadata: Metadata = {
