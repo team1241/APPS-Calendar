@@ -1,0 +1,21 @@
+# Runs the calendar web server on the Pi at boot and restarts it if it crashes.
+# install.sh copies this to /etc/systemd/system/ and fills in User= and the node path.
+
+[Unit]
+Description=APPS Calendar (Next.js server)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/opt/apps-calendar/app
+Environment=NODE_ENV=production
+Environment=PORT=3000
+# 0.0.0.0 lets other Tailscale devices reach it, not just the Pi's own browser.
+Environment=HOSTNAME=0.0.0.0
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -14,6 +14,7 @@ import {
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useCalendarData } from "../hooks/use-calendar-data";
+import { useCarouselRotation } from "../hooks/use-carousel-rotation";
 import { useComposerSubmit } from "../hooks/use-composer-submit";
 import { useSubteamFilter } from "../hooks/use-subteam-filter";
 import { AdminPanel } from "./calendar/AdminPanel";
@@ -295,17 +296,11 @@ export default function CalendarApp() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [carouselMode]);
 
-  useEffect(() => {
-    if (!carouselMode) {
-      return;
-    }
-    const timer = window.setInterval(() => {
-      const nextView =
-        view === "month" ? "week" : view === "week" ? "announcements" : "month";
-      handleSetView(nextView);
-    }, 15_000);
-    return () => window.clearInterval(timer);
-  }, [carouselMode, handleSetView, view]);
+  useCarouselRotation({
+    enabled: carouselMode,
+    onSetView: handleSetView,
+    view,
+  });
 
   useEffect(() => {
     if (appSection === "admin" && !canManageUsers) {
