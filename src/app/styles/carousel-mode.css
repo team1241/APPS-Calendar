@@ -107,3 +107,18 @@
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.06);
 }
+
+/* Wall display (/display): fill the screen and hide controls nobody can click. */
+.display-mode .month-wrap,
+.display-mode .week-wrap {
+  max-width: none;
+}
+
+.display-mode .month-nav {
+  display: none;
+}
+
+.display-mode,
+.display-mode * {
+  cursor: none !important;
+}

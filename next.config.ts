@@ -7,7 +7,8 @@ const jiti = createJiti(import.meta.url);
 jiti("./src/env.ts");
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Self-contained server in .next/standalone, packaged by deploy/pi/build-bundle.sh
+  output: "standalone",
 };
 
 export default nextConfig;
