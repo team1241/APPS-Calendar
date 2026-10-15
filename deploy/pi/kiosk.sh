@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Opens the calendar full-screen on the wall display. Started automatically by kiosk.desktop.
 
-URL="http://localhost:3000/display"
+SERVER="http://localhost:3000"
+# The token goes after "#" so it stays in the browser and never reaches server logs.
+URL="$SERVER/display#token=$(cat /opt/apps-calendar/display-token)"
 PREFS="$HOME/.config/chromium/Default/Preferences"
 
 # Wait for the calendar server to be ready so the screen doesn't show an error page.
-until curl --silent --output /dev/null "$URL"; do
+until curl --silent --output /dev/null "$SERVER"; do
   sleep 2
 done
 

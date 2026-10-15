@@ -32,7 +32,10 @@ rm -rf "$INSTALL_DIR/app"
 cp -r "$BUNDLE/app" "$INSTALL_DIR/app"
 cp "$BUNDLE/kiosk.sh" "$INSTALL_DIR/kiosk.sh"
 chmod +x "$INSTALL_DIR/kiosk.sh"
+install -m 600 "$BUNDLE/display-token" "$INSTALL_DIR/display-token"
 chown -R "$KIOSK_USER:" "$INSTALL_DIR"
+# Holds .env and the display token, so only the kiosk user can read it.
+chmod 700 "$INSTALL_DIR"
 
 echo "==> Setting up the calendar server to start at boot"
 sed -e "s|^User=.*|User=$KIOSK_USER|" -e "s|/usr/bin/node|$NODE_BIN|" \

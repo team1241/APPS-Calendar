@@ -10,10 +10,12 @@
 
 import type * as announcements from "../announcements.js";
 import type * as dev_seed from "../dev/seed.js";
+import type * as display from "../display.js";
 import type * as donations from "../donations.js";
 import type * as eventTypes from "../eventTypes.js";
 import type * as events from "../events.js";
 import type * as lib_auth from "../lib/auth.js";
+import type * as lib_calendarReads from "../lib/calendarReads.js";
 import type * as lib_clerk from "../lib/clerk.js";
 import type * as lib_userAccess from "../lib/userAccess.js";
 import type * as lib_userProfiles from "../lib/userProfiles.js";
@@ -31,10 +33,12 @@ import type {
 declare const fullApi: ApiFromModules<{
   announcements: typeof announcements;
   "dev/seed": typeof dev_seed;
+  display: typeof display;
   donations: typeof donations;
   eventTypes: typeof eventTypes;
   events: typeof events;
   "lib/auth": typeof lib_auth;
+  "lib/calendarReads": typeof lib_calendarReads;
   "lib/clerk": typeof lib_clerk;
   "lib/userAccess": typeof lib_userAccess;
   "lib/userProfiles": typeof lib_userProfiles;

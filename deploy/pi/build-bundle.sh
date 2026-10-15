@@ -11,6 +11,18 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
+# Points the build at the production Convex deployment instead of a personal dev one.
+if [ ! -f .env.production.local ]; then
+  echo "Missing .env.production.local (production Convex URLs). See deploy/pi/README.md." >&2
+  exit 1
+fi
+
+DISPLAY_TOKEN="$(grep '^DISPLAY_TOKEN=' .env.production.local | cut -d= -f2-)"
+if [ -z "$DISPLAY_TOKEN" ]; then
+  echo "Missing DISPLAY_TOKEN in .env.production.local. See deploy/pi/README.md." >&2
+  exit 1
+fi
+
 [ -d node_modules ] || npm ci
 npm run build
 
@@ -42,6 +54,7 @@ fi
 cp deploy/pi/install.sh deploy/pi/calendar.service deploy/pi/kiosk.sh \
   deploy/pi/kiosk.desktop deploy/pi/chromium-kiosk-policy.json deploy/pi/kanshi.config "$STAGE/"
 chmod +x "$STAGE/install.sh" "$STAGE/kiosk.sh"
+(umask 077 && printf '%s' "$DISPLAY_TOKEN" > "$STAGE/display-token")
 
 ZIP_NAME="apps-calendar-pi-$(date +%Y%m%d)-$(git rev-parse --short HEAD).zip"
 rm -f "$OUT_DIR/$ZIP_NAME"
@@ -50,7 +63,7 @@ rm -rf "$OUT_DIR/stage"
 
 echo
 echo "Bundle ready: dist/$ZIP_NAME"
-echo "It contains .env (secret keys). Only copy it to the Pi, don't share it."
+echo "It contains .env and the display token (secrets). Only copy it to the Pi, don't share it."
 echo
 echo "Next steps:"
 echo "  scp dist/$ZIP_NAME pi@<pi-name>:~"

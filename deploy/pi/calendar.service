@@ -11,8 +11,9 @@ User=pi
 WorkingDirectory=/opt/apps-calendar/app
 Environment=NODE_ENV=production
 Environment=PORT=3000
-# 0.0.0.0 lets other Tailscale devices reach it, not just the Pi's own browser.
-Environment=HOSTNAME=0.0.0.0
+# Only the Pi itself can connect; other devices go through `tailscale serve` (HTTPS, tailnet only).
+# Use "localhost", not "127.0.0.1": Next's internal proxy hangs with the literal IP.
+Environment=HOSTNAME=localhost
 ExecStart=/usr/bin/node server.js
 Restart=always
 RestartSec=5

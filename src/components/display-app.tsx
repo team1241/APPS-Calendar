@@ -1,13 +1,18 @@
 "use client";
 
+import { useQuery } from "convex/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  CATEGORIES,
-  type CategoryKey,
+  addDays,
   stripTime,
   type ViewTransition,
 } from "@/lib/calendar/calendar";
-import { useCalendarData } from "../hooks/use-calendar-data";
+import {
+  toCalendarAnnouncements,
+  toCalendarEvents,
+} from "@/lib/calendar/convex-mappers";
+import { createSubteamMaps } from "@/lib/calendar/subteam-maps";
+import { api } from "../../convex/_generated/api";
 import { useCarouselRotation } from "../hooks/use-carousel-rotation";
 import { AnnouncementsView } from "./calendar/AnnouncementsView";
 import { MonthView } from "./calendar/MonthView";
@@ -15,7 +20,9 @@ import { WeekView } from "./calendar/WeekView";
 
 type DisplayView = "month" | "week" | "announcements";
 
-const ALL_SUBTEAMS = new Set(Object.keys(CATEGORIES) as CategoryKey[]);
+const MONTH_GRID_DAYS = 41;
+const WEEK_DAYS_BEFORE = 14;
+const WEEK_DAYS_AFTER = 21;
 const VIEW_ORDER: Record<DisplayView, number> = {
   announcements: 2,
   month: 0,
@@ -23,6 +30,13 @@ const VIEW_ORDER: Record<DisplayView, number> = {
 };
 const VIEW_TRANSITION_MS = 460;
 const noop = () => undefined;
+
+/**
+ * @brief Reads the display token from the URL fragment (#token=...), which browsers never send to the server.
+ */
+function readDisplayToken(): string {
+  return new URLSearchParams(window.location.hash.slice(1)).get("token") ?? "";
+}
 
 /**
  * @brief Read-only, login-free calendar for the wall display; always in carousel mode.
@@ -36,13 +50,34 @@ export default function DisplayApp() {
   const [view, setView] = useState<DisplayView>("month");
   const [viewTransition, setViewTransition] = useState<ViewTransition>(null);
 
-  const { announcements, events } = useCalendarData({
-    cursor,
-    isSignedIn: false,
-    subteamFilter: ALL_SUBTEAMS,
-    today,
-    view,
-  });
+  const token = useMemo(readDisplayToken, []);
+  // Covers both the month grid and the week view so rotating views doesn't refetch.
+  const range = useMemo(() => {
+    const monthGridStart = addDays(cursor, -cursor.getDay());
+    const start = Math.min(
+      monthGridStart.getTime(),
+      addDays(today, -WEEK_DAYS_BEFORE).getTime()
+    );
+    const end = Math.max(
+      addDays(monthGridStart, MONTH_GRID_DAYS).getTime(),
+      addDays(today, WEEK_DAYS_AFTER).getTime()
+    );
+    return { end, start };
+  }, [cursor, today]);
+  const feed = useQuery(api.display.feed, token ? { ...range, token } : "skip");
+  const { subteamIdToKey } = useMemo(
+    () => createSubteamMaps(feed?.subteams),
+    [feed?.subteams]
+  );
+  const events = useMemo(
+    () => toCalendarEvents(feed?.events, subteamIdToKey),
+    [feed?.events, subteamIdToKey]
+  );
+  const announcements = useMemo(
+    () => toCalendarAnnouncements(feed?.announcements),
+    [feed?.announcements]
+  );
+  const isUnauthorized = !token || feed === null;
 
   const handleSetView = useCallback(
     (next: DisplayView) => {
@@ -74,6 +109,23 @@ export default function DisplayApp() {
     );
     return () => clearTimeout(timer);
   }, [today]);
+
+  if (isUnauthorized) {
+    return (
+      <div
+        className="display-mode"
+        id="app"
+        style={{
+          alignItems: "center",
+          display: "flex",
+          height: "100vh",
+          justifyContent: "center",
+        }}
+      >
+        <div className="micro-label">Display not authorized</div>
+      </div>
+    );
+  }
 
   return (
     <div className="carousel-mode display-mode" id="app">

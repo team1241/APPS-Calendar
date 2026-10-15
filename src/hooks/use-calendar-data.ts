@@ -4,11 +4,13 @@ import { useMutation, useQuery } from "convex/react";
 import { useEffect, useMemo } from "react";
 import {
   addDays,
-  type CalendarAnnouncement,
-  type CalendarEvent,
   type CategoryKey,
   isEventVisible,
 } from "@/lib/calendar/calendar";
+import {
+  toCalendarAnnouncements,
+  toCalendarEvents,
+} from "@/lib/calendar/convex-mappers";
 import { createSubteamMaps } from "@/lib/calendar/subteam-maps";
 import { api } from "../../convex/_generated/api";
 
@@ -65,60 +67,18 @@ export function useCalendarData({
     );
     return standard?._id ?? eventTypes[0]._id;
   }, [eventTypes]);
-  const events = useMemo<CalendarEvent[]>(() => {
-    if (!convexEvents) {
-      return [];
-    }
-    return convexEvents.map(
-      (event: {
-        _id: string;
-        allDay: boolean;
-        endTime: number;
-        info?: string;
-        location: string;
-        organizer: string;
-        startTime: number;
-        subteams: string[];
-        title: string;
-        updatedAt: number;
-      }) => ({
-        allDay: event.allDay,
-        createdAt: new Date(event.updatedAt),
-        end: new Date(event.endTime),
-        id: event._id,
-        info: event.info ?? undefined,
-        location: event.location,
-        organizer: event.organizer,
-        start: new Date(event.startTime),
-        subteams: event.subteams
-          .map((id: string) => subteamIdToKey.get(id as never))
-          .filter(Boolean) as CategoryKey[],
-        title: event.title,
-      })
-    );
-  }, [convexEvents, subteamIdToKey]);
+  const events = useMemo(
+    () => toCalendarEvents(convexEvents, subteamIdToKey),
+    [convexEvents, subteamIdToKey]
+  );
   const visibleEvents = useMemo(
     () => events.filter((event) => isEventVisible(event, subteamFilter)),
     [events, subteamFilter]
   );
-  const announcements = useMemo<CalendarAnnouncement[]>(() => {
-    if (!convexAnnouncements) {
-      return [];
-    }
-    return convexAnnouncements.map(
-      (announcement: {
-        _id: string;
-        snippet: string;
-        title: string;
-        updatedAt: number;
-      }) => ({
-        date: new Date(announcement.updatedAt),
-        id: announcement._id,
-        snippet: announcement.snippet,
-        title: announcement.title,
-      })
-    );
-  }, [convexAnnouncements]);
+  const announcements = useMemo(
+    () => toCalendarAnnouncements(convexAnnouncements),
+    [convexAnnouncements]
+  );
 
   return {
     announcements,
