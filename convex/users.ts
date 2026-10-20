@@ -4,6 +4,7 @@ import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import {
   action,
+  internalMutation,
   type MutationCtx,
   mutation,
   query,
@@ -304,4 +305,29 @@ export const backfillMissingUserProfiles = action({
       internal.userMaintenance.backfillMissingUserProfiles,
       args
     ),
+});
+
+/**
+ * @brief Sets a user's role by email. CLI-only (internal), for bootstrapping the first mentor:
+ * `npx convex run --prod users:setRoleByEmail '{"email": "...", "role": "mentor"}'`
+ */
+export const setRoleByEmail = internalMutation({
+  args: { email: v.string(), role: userRoleValidator },
+  handler: async (ctx, args) => {
+    const matches = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .take(2);
+    if (matches.length !== 1) {
+      throw new Error(
+        `Expected exactly one user with email ${args.email}, found ${matches.length}`
+      );
+    }
+    await ctx.db.patch("users", matches[0]._id, {
+      isAdmin: args.role !== "member",
+      role: args.role,
+      updatedAt: Date.now(),
+    });
+    return null;
+  },
 });

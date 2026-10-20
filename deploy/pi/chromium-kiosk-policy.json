@@ -1,0 +1,12 @@
+{
+  "TranslateEnabled": false,
+  "DefaultNotificationsSetting": 2,
+  "DefaultGeolocationSetting": 2,
+  "PasswordManagerEnabled": false,
+  "AutofillAddressEnabled": false,
+  "AutofillCreditCardEnabled": false,
+  "BrowserSignin": 0,
+  "PromotionalTabsEnabled": false,
+  "HideFirstRunExperience": true,
+  "RestoreOnStartup": 5
+}

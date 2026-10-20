@@ -1,6 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin } from "./users";
+import { getAuthedUser, requireAdmin } from "./users";
 
 // Seed values from the original spec: "holidays", "standard events",
 // "robotics meetings", "announcements". Insert these once via `create`
@@ -10,6 +10,7 @@ import { requireAdmin } from "./users";
 export const list = query({
   args: {},
   handler: async (ctx) => {
+    if (!(await getAuthedUser(ctx))) return [];
     return await ctx.db.query("eventTypes").order("asc").take(50);
   },
 });

@@ -1,15 +1,13 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin, requireAuthedUser } from "./users";
+import { getAuthedUser, requireAdmin } from "./users";
+import { listRecentAnnouncements } from "./lib/calendarReads";
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
-      .query("announcements")
-      .withIndex("by_updatedAt")
-      .order("desc")
-      .take(100);
+    if (!(await getAuthedUser(ctx))) return [];
+    return await listRecentAnnouncements(ctx);
   },
 });
 
@@ -19,7 +17,7 @@ export const create = mutation({
     snippet: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await requireAuthedUser(ctx);
+    const user = await requireAdmin(ctx);
     return await ctx.db.insert("announcements", {
       ...args,
       author: user._id,

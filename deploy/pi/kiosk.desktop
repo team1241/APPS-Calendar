@@ -1,0 +1,6 @@
+[Desktop Entry]
+# Starts kiosk.sh when the Pi's desktop logs in.
+# install.sh copies this to ~/.config/autostart/
+Type=Application
+Name=Calendar Kiosk
+Exec=/opt/apps-calendar/kiosk.sh

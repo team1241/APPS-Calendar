@@ -1,11 +1,13 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin } from "./users";
+import { getAuthedUser, requireAdmin } from "./users";
+import { listAllSubteams } from "./lib/calendarReads";
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("subteams").order("asc").take(50);
+    if (!(await getAuthedUser(ctx))) return [];
+    return await listAllSubteams(ctx);
   },
 });
 

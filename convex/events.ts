@@ -1,36 +1,20 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { requireAdmin, requireAuthedUser } from "./users";
-import { getUserRole } from "./lib/userAccess";
+import { getAuthedUser, requireAdmin } from "./users";
+import { listEventsInRange } from "./lib/calendarReads";
 
 export const listByRange = query({
   args: { start: v.number(), end: v.number() },
   handler: async (ctx, args) => {
-    const startingInRange = await ctx.db
-      .query("events")
-      .withIndex("by_startTime", (q) =>
-        q.gte("startTime", args.start).lte("startTime", args.end),
-      )
-      .order("asc")
-      .take(200);
-
-    const endingAfterRangeStart = await ctx.db
-      .query("events")
-      .withIndex("by_startTime", (q) => q.lt("startTime", args.start))
-      .order("desc")
-      .take(200);
-
-    return [...endingAfterRangeStart, ...startingInRange].filter(
-      (event, index, all) =>
-        event.endTime >= args.start &&
-        all.findIndex((candidate) => candidate._id === event._id) === index,
-    );
+    if (!(await getAuthedUser(ctx))) return [];
+    return await listEventsInRange(ctx, args.start, args.end);
   },
 });
 
 export const get = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
+    if (!(await getAuthedUser(ctx))) return null;
     return await ctx.db.get("events", args.eventId);
   },
 });
@@ -48,7 +32,7 @@ export const create = mutation({
     info: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await requireAuthedUser(ctx);
+    const user = await requireAdmin(ctx);
     return await ctx.db.insert("events", {
       ...args,
       author: user._id,
@@ -71,13 +55,10 @@ export const update = mutation({
     info: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await requireAuthedUser(ctx);
+    await requireAdmin(ctx);
     const { eventId, ...patch } = args;
     const event = await ctx.db.get("events", eventId);
     if (!event) throw new Error("Event not found");
-    if (event.author !== user._id && getUserRole(user) === "member") {
-      throw new Error("Not authorized to edit this event");
-    }
     await ctx.db.patch("events", eventId, { ...patch, updatedAt: Date.now() });
     return null;
   },
