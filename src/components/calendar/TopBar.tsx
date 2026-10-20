@@ -10,6 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useThemePreference } from "@/hooks/use-theme-preference";
 import type { UserRole } from "@/lib/admin/types";
 import {
   CATEGORIES,
@@ -21,6 +22,12 @@ import {
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
 import { FilterPopover } from "./FilterPopover";
+
+const THEME_OPTIONS = [
+  { label: "System", value: "system" },
+  { label: "Light", value: "light" },
+  { label: "Dark", value: "dark" },
+] as const;
 
 export function TopBar({
   adminPanelOpen,
@@ -61,6 +68,8 @@ export function TopBar({
 }) {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const { preference: themePreference, setPreference: setThemePreference } =
+    useThemePreference();
   const now = new Date();
   const visibleEventsList = events.filter((e) =>
     isEventVisible(e, subteamFilter)
@@ -237,6 +246,24 @@ export function TopBar({
                   Admin panel
                 </button>
               )}
+              <div aria-label="Theme" className="profile-theme" role="group">
+                <span className="profile-theme-label">Theme</span>
+                <div className="profile-theme-options">
+                  {THEME_OPTIONS.map(({ label, value }) => (
+                    <button
+                      aria-checked={themePreference === value}
+                      className="profile-theme-option"
+                      key={value}
+                      onClick={() => setThemePreference(value)}
+                      role="menuitemradio"
+                      type="button"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="profile-popover-divider" />
               <button
                 className="profile-menu-item signout-menu-item"
                 onClick={handleSignOut}
