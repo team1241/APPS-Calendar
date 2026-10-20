@@ -142,13 +142,13 @@
 
 :root {
   --bg: #0f0f11;
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-border: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.045);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --text-primary: #fafaf8;
-  --text-secondary: rgba(250, 250, 248, 0.46);
-  --text-tertiary: rgba(250, 250, 248, 0.27);
+  --surface: rgb(var(--overlay-rgb) / 0.05);
+  --surface-border: rgb(var(--overlay-rgb) / 0.08);
+  --glass-bg: rgb(var(--overlay-rgb) / 0.045);
+  --glass-border: rgb(var(--overlay-rgb) / 0.14);
+  --text-primary: rgb(var(--ink-rgb));
+  --text-secondary: rgb(var(--ink-rgb) / 0.46);
+  --text-tertiary: rgb(var(--ink-rgb) / 0.27);
   --font-head: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -167,7 +167,7 @@ body {
   padding: 0;
   margin: 0;
   -webkit-text-size-adjust: 100%;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgb(var(--overlay-rgb) / 0.2) transparent;
   scrollbar-width: thin;
   background: var(--bg);
 }
@@ -182,14 +182,14 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgb(var(--overlay-rgb) / 0.18);
   background-clip: padding-box;
   border: 2px solid transparent;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.32);
+  background: rgb(var(--overlay-rgb) / 0.32);
   background-clip: padding-box;
 }
 
@@ -224,7 +224,12 @@ button {
 .backdrop .grad {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #1a1a1d 0%, var(--bg) 45%, #0a0a0b 100%);
+  background: linear-gradient(
+    180deg,
+    var(--grad-from) 0%,
+    var(--bg) 45%,
+    var(--grad-to) 100%
+  );
 }
 
 .backdrop .blob1 {
@@ -249,7 +254,7 @@ button {
   height: 50%;
   background: radial-gradient(
     circle,
-    rgba(250, 250, 248, 0.045) 0%,
+    rgb(var(--ink-rgb) / 0.045) 0%,
     transparent 70%
   );
   filter: blur(10px);
@@ -259,7 +264,7 @@ button {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(
-    rgba(255, 255, 255, 0.05) 1px,
+    rgb(var(--overlay-rgb) / 0.05) 1px,
     transparent 1px
   );
   background-size: 24px 24px;
@@ -274,8 +279,8 @@ button {
   pointer-events: none;
   background: radial-gradient(
     ellipse at top,
-    rgba(250, 250, 248, 0.1) 0%,
-    rgba(250, 250, 248, 0.03) 40%,
+    rgb(var(--glow-rgb) / 0.1) 0%,
+    rgb(var(--glow-rgb) / 0.03) 40%,
     transparent 70%
   );
   opacity: 0.7;
@@ -363,7 +368,7 @@ button {
   height: 18px;
   overflow: hidden;
   background: #101319;
-  border: 1px solid #fff;
+  border: 1px solid rgb(var(--overlay-rgb));
   border-radius: 50%;
 }
 
@@ -383,7 +388,7 @@ button {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 999px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgb(0 0 0 / calc(0.2 * var(--shadow-k)));
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   transition:
@@ -392,8 +397,8 @@ button {
 }
 
 .next-event-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgb(var(--overlay-rgb) / 0.08);
+  border-color: rgb(var(--overlay-rgb) / 0.22);
 }
 
 .next-event-pill .dot {
@@ -434,7 +439,7 @@ button {
 
 .icon-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 .filter-btn {
@@ -448,12 +453,12 @@ button {
 
 .filter-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 .filter-btn.active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--overlay-rgb) / 0.1);
 }
 
 .filter-dot {
@@ -484,7 +489,7 @@ button {
 
 .signout-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 .avatar {
@@ -525,8 +530,8 @@ button {
   border: 1px solid var(--glass-border);
   border-radius: 14px;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 20px 60px rgb(0 0 0 / calc(0.45 * var(--shadow-k))),
+    inset 0 1px 0 rgb(var(--overlay-rgb) / 0.08);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
 }
@@ -566,7 +571,7 @@ button {
   bottom: 5px;
   left: 0;
   pointer-events: none;
-  background: #fafaf8;
+  background: rgb(var(--ink-rgb));
   border-radius: 999px;
   transition:
     transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -589,7 +594,7 @@ button {
 }
 
 .bottom-nav button.active {
-  color: #0e0e10;
+  color: var(--on-ink);
 }
 
 /* ---------- month view ---------- */
@@ -639,8 +644,8 @@ button {
 
 .nav-arrow:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgb(var(--overlay-rgb) / 0.14);
+  border-color: rgb(var(--overlay-rgb) / 0.28);
 }
 
 .nav-arrow:active {
@@ -662,15 +667,15 @@ button {
 
 .today-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgb(var(--overlay-rgb) / 0.14);
+  border-color: rgb(var(--overlay-rgb) / 0.28);
 }
 
 .month-nav .nav-arrow,
 .month-header .today-btn {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgb(var(--overlay-rgb) / 0.08);
+  border-color: rgb(var(--overlay-rgb) / 0.16);
 }
 
 .month-grid {
@@ -679,13 +684,13 @@ button {
   margin-bottom: 20px;
   overflow: hidden;
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%),
+    linear-gradient(160deg, rgb(var(--overlay-rgb) / 0.06) 0%, transparent 40%),
     var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: 20px;
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 12px 32px rgb(0 0 0 / calc(0.25 * var(--shadow-k))),
+    inset 0 1px 0 rgb(var(--overlay-rgb) / 0.06);
 }
 
 .month-grid-header {
@@ -715,7 +720,7 @@ button {
 
 .weekday-cell {
   padding: 12px 12px 10px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgb(var(--overlay-rgb) / 0.02);
   border-right: 1px solid var(--surface-border);
   border-bottom: 1px solid var(--surface-border);
 }
@@ -740,7 +745,7 @@ button {
 }
 
 .day-cell:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--overlay-rgb) / 0.03);
 }
 
 .day-cell.other-month {
@@ -762,19 +767,19 @@ button {
   background:
     radial-gradient(
       ellipse at 50% 50%,
-      rgba(250, 250, 248, 0.09) 0%,
-      rgba(250, 250, 248, 0.03) 45%,
+      rgb(var(--glow-rgb) / 0.09) 0%,
+      rgb(var(--glow-rgb) / 0.03) 45%,
       transparent 75%
     ),
     var(--surface);
   border: none;
   border-radius: 14px;
   box-shadow:
-    0 14px 28px -8px rgba(0, 0, 0, 0.55),
-    0 4px 10px -4px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(250, 250, 248, 0.16),
-    inset 0 1px 0 rgba(250, 250, 248, 0.13),
-    inset 0 0 22px rgba(250, 250, 248, 0.035);
+    0 14px 28px -8px rgb(0 0 0 / calc(0.55 * var(--shadow-k))),
+    0 4px 10px -4px rgb(0 0 0 / calc(0.35 * var(--shadow-k))),
+    0 0 0 1px rgb(var(--glow-rgb) / 0.16),
+    inset 0 1px 0 rgb(var(--glow-rgb) / 0.13),
+    inset 0 0 22px rgb(var(--glow-rgb) / 0.035);
 }
 
 .day-num-row {
@@ -807,17 +812,17 @@ button {
 }
 
 .day-num-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--overlay-rgb) / 0.08);
 }
 
 .day-num-btn:focus-visible {
-  outline: 2px solid rgba(250, 250, 248, 0.22);
+  outline: 2px solid rgb(var(--ink-rgb) / 0.22);
   outline-offset: 2px;
 }
 
 .day-num.today {
-  color: #0e0e10;
-  background: #fafaf8;
+  color: var(--on-ink);
+  background: rgb(var(--ink-rgb));
 }
 
 .month-label {
@@ -887,7 +892,7 @@ button {
   line-height: 14px;
   color: var(--text-primary);
   white-space: nowrap;
-  background: rgba(15, 15, 17, 0.72);
+  background: rgb(var(--panel-rgb) / 0.72);
   border-radius: 999px;
 }
 
@@ -944,8 +949,8 @@ button {
   content: "";
   background-image: repeating-linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.18) 0px,
-    rgba(255, 255, 255, 0.18) 1.5px,
+    rgb(var(--overlay-rgb) / 0.18) 0px,
+    rgb(var(--overlay-rgb) / 0.18) 1.5px,
     transparent 1.5px,
     transparent 7px
   );
@@ -978,7 +983,7 @@ button {
 }
 
 .more-btn:focus-visible {
-  outline: 2px solid rgba(250, 250, 248, 0.22);
+  outline: 2px solid rgb(var(--ink-rgb) / 0.22);
   outline-offset: 2px;
 }
 
@@ -1051,15 +1056,15 @@ button {
   background:
     radial-gradient(
       ellipse 140% 60% at 50% 0%,
-      rgba(250, 250, 248, 0.16) 0%,
-      rgba(250, 250, 248, 0.04) 45%,
+      rgb(var(--glow-rgb) / 0.16) 0%,
+      rgb(var(--glow-rgb) / 0.04) 45%,
       transparent 75%
     ),
     var(--surface);
   border: 1px solid var(--surface-border);
   box-shadow:
-    0 0 16px rgba(250, 250, 248, 0.12),
-    0 0 32px rgba(250, 250, 248, 0.06);
+    0 0 16px rgb(var(--glow-rgb) / 0.12),
+    0 0 32px rgb(var(--glow-rgb) / 0.06);
 }
 
 .day-col.big {
@@ -1099,8 +1104,8 @@ button {
   width: 34px;
   height: 34px;
   margin-top: 2px;
-  color: #0e0e10;
-  background: #fafaf8;
+  color: var(--on-ink);
+  background: rgb(var(--ink-rgb));
   border-radius: 999px;
 }
 
@@ -1188,7 +1193,7 @@ button {
   padding: 4px 7px;
   overflow: hidden;
   text-align: left;
-  background: rgba(15, 15, 17, 0.72);
+  background: rgb(var(--panel-rgb) / 0.72);
   border-radius: 5px;
 }
 
@@ -1265,15 +1270,15 @@ button {
   background:
     radial-gradient(
       ellipse 140% 60% at 50% 0%,
-      rgba(250, 250, 248, 0.16) 0%,
-      rgba(250, 250, 248, 0.04) 45%,
+      rgb(var(--glow-rgb) / 0.16) 0%,
+      rgb(var(--glow-rgb) / 0.04) 45%,
       transparent 75%
     ),
     var(--surface);
   border-color: var(--surface-border);
   box-shadow:
-    0 0 16px rgba(250, 250, 248, 0.12),
-    0 0 32px rgba(250, 250, 248, 0.06);
+    0 0 16px rgb(var(--glow-rgb) / 0.12),
+    0 0 32px rgb(var(--glow-rgb) / 0.06);
 }
 
 .ann-card .time {
@@ -1359,7 +1364,7 @@ button {
   pointer-events: none;
   background: radial-gradient(
     ellipse,
-    rgba(250, 250, 248, 0.1) 0%,
+    rgb(var(--glow-rgb) / 0.1) 0%,
     transparent 70%
   );
   transform: translateX(-50%);
@@ -1387,7 +1392,7 @@ button {
   font-size: 14px;
   color: var(--text-primary);
   outline: none;
-  background: rgba(255, 255, 255, 0.045);
+  background: rgb(var(--overlay-rgb) / 0.045);
   border: 1px solid var(--surface-border);
   border-radius: 999px;
 }
@@ -1437,8 +1442,8 @@ button {
   padding: 14px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #0e0e10;
-  background: #fafaf8;
+  color: var(--on-ink);
+  background: rgb(var(--ink-rgb));
   border: none;
   border-radius: 999px;
   transition:
@@ -1449,8 +1454,8 @@ button {
 
 .primary-btn:hover {
   color: var(--text-primary);
-  background: rgba(250, 250, 248, 0.14);
-  box-shadow: inset 0 0 0 1px rgba(250, 250, 248, 0.22);
+  background: rgb(var(--ink-rgb) / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(var(--ink-rgb) / 0.22);
 }
 
 .secondary-btn {
@@ -1489,7 +1494,7 @@ button {
   margin: 0 0 16px;
   font-size: 12.5px;
   line-height: 1.45;
-  color: #f0a3a3;
+  color: var(--danger-text);
   background: rgba(224, 90, 90, 0.14);
   border: 1px solid rgba(224, 90, 90, 0.35);
   border-radius: 10px;
@@ -1516,7 +1521,7 @@ button {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgb(0 0 0 / calc(0.55 * var(--shadow-k)));
 }
 
 .event-modal {
@@ -1625,14 +1630,14 @@ button {
 }
 
 .confirmation-modal .destructive-btn {
-  color: #f0a3a3;
+  color: var(--danger-text);
   background: rgba(224, 90, 90, 0.16);
   box-shadow: inset 0 0 0 1px rgba(224, 90, 90, 0.35);
 }
 
 .confirmation-modal .destructive-btn:hover {
   background: rgba(224, 90, 90, 0.24);
-  box-shadow: inset 0 0 0 1px rgba(240, 163, 163, 0.5);
+  box-shadow: inset 0 0 0 1px rgb(var(--danger-rgb) / 0.5);
 }
 
 .day-list-modal {
@@ -1648,8 +1653,8 @@ button {
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 20px 60px rgb(0 0 0 / calc(0.45 * var(--shadow-k))),
+    inset 0 1px 0 rgb(var(--overlay-rgb) / 0.08);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   animation: popover-pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -1695,7 +1700,7 @@ button {
   width: 28px;
   height: 28px;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--overlay-rgb) / 0.05);
   border: none;
   border-radius: 999px;
   transition:
@@ -1705,7 +1710,7 @@ button {
 
 .day-list-modal .close-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--overlay-rgb) / 0.1);
 }
 
 .day-list-modal .list {
@@ -1728,7 +1733,7 @@ button {
   padding: 10px 12px;
   overflow: hidden;
   text-align: left;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(var(--overlay-rgb) / 0.03);
   border: 1px solid var(--surface-border);
   border-radius: 13px;
   transition:
@@ -1741,12 +1746,12 @@ button {
   inset: 0;
   pointer-events: none;
   content: "";
-  background: rgba(255, 255, 255, 0);
+  background: rgb(var(--overlay-rgb) / 0);
   transition: background 150ms ease-out;
 }
 
 .day-list-item:hover::after {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 .day-list-item .cat-dot {
@@ -1804,7 +1809,7 @@ button {
   display: flex;
   gap: 4px;
   padding: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--overlay-rgb) / 0.05);
   border: 1px solid var(--surface-border);
   border-radius: 999px;
 }
@@ -1815,7 +1820,7 @@ button {
   bottom: 3px;
   left: 0;
   pointer-events: none;
-  background: #fafaf8;
+  background: rgb(var(--ink-rgb));
   border-radius: 999px;
   will-change: transform, width;
 }
@@ -1835,14 +1840,14 @@ button {
 }
 
 .composer-tab.active {
-  color: #0e0e10;
+  color: var(--on-ink);
 }
 
 .composer-error {
   padding: 9px 12px;
   margin: 0 0 14px;
   font-size: 12.5px;
-  color: #f0a3a3;
+  color: var(--danger-text);
   background: rgba(224, 90, 90, 0.14);
   border: 1px solid rgba(224, 90, 90, 0.35);
   border-radius: 10px;
@@ -1855,7 +1860,7 @@ button {
   padding: 2px 4px 4px;
   margin: 0 -4px;
   overflow-y: auto;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgb(var(--overlay-rgb) / 0.2) transparent;
   scrollbar-width: thin;
 }
 
@@ -1868,12 +1873,12 @@ button {
 }
 
 .composer-form::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgb(var(--overlay-rgb) / 0.18);
   border-radius: 999px;
 }
 
 .composer-form::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.32);
+  background: rgb(var(--overlay-rgb) / 0.32);
 }
 
 .form-field {
@@ -1901,7 +1906,7 @@ button {
   font-size: 13.5px;
   color: var(--text-primary);
   outline: none;
-  background: rgba(255, 255, 255, 0.045);
+  background: rgb(var(--overlay-rgb) / 0.045);
   border: 1px solid var(--surface-border);
   border-radius: 12px;
   transition:
@@ -1912,16 +1917,16 @@ button {
 }
 
 .form-input:hover {
-  background: rgba(255, 255, 255, 0.065);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgb(var(--overlay-rgb) / 0.065);
+  border-color: rgb(var(--overlay-rgb) / 0.16);
 }
 
 .form-input:focus {
-  background: rgba(255, 255, 255, 0.075);
-  border-color: rgba(255, 255, 255, 0.34);
+  background: rgb(var(--overlay-rgb) / 0.075);
+  border-color: rgb(var(--overlay-rgb) / 0.34);
   box-shadow:
-    0 0 0 3px rgba(255, 255, 255, 0.07),
-    0 8px 24px rgba(0, 0, 0, 0.18);
+    0 0 0 3px rgb(var(--overlay-rgb) / 0.07),
+    0 8px 24px rgb(0 0 0 / calc(0.18 * var(--shadow-k)));
 }
 
 .form-input[type="date"],
@@ -1931,7 +1936,7 @@ button {
   font-size: 12.5px;
   letter-spacing: -0.01em;
   cursor: pointer;
-  color-scheme: dark;
+  color-scheme: var(--color-scheme);
 }
 
 .form-input[type="date"]::-webkit-calendar-picker-indicator,
@@ -1951,7 +1956,7 @@ button {
 
 .form-input[type="date"]::-webkit-calendar-picker-indicator:hover,
 .form-input[type="time"]::-webkit-calendar-picker-indicator:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgb(var(--overlay-rgb) / 0.12);
   opacity: 1;
 }
 
@@ -1966,9 +1971,9 @@ button {
   width: 5px;
   height: 5px;
   content: "";
-  background: rgba(250, 250, 248, 0.48);
+  background: rgb(var(--ink-rgb) / 0.48);
   border-radius: 999px;
-  box-shadow: 0 0 8px rgba(250, 250, 248, 0.16);
+  box-shadow: 0 0 8px rgb(var(--ink-rgb) / 0.16);
 }
 
 .date-time-field .form-input {
@@ -2002,7 +2007,7 @@ select.form-input {
 .form-check input {
   width: 15px;
   height: 15px;
-  accent-color: #fafaf8;
+  accent-color: rgb(var(--ink-rgb));
 }
 
 .allday-toggle {
@@ -2014,7 +2019,7 @@ select.form-input {
   font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.045);
+  background: rgb(var(--overlay-rgb) / 0.045);
   border: 1px solid var(--surface-border);
   border-radius: 999px;
   transition:
@@ -2027,7 +2032,7 @@ select.form-input {
 
 .allday-toggle:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--overlay-rgb) / 0.08);
 }
 
 .allday-toggle:active {
@@ -2047,16 +2052,16 @@ select.form-input {
 
 .allday-toggle.selected {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.55);
+  background: rgb(var(--overlay-rgb) / 0.16);
+  border-color: rgb(var(--overlay-rgb) / 0.55);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.55),
-    0 0 14px rgba(255, 255, 255, 0.4);
+    0 0 0 1px rgb(var(--overlay-rgb) / 0.55),
+    0 0 14px rgb(var(--overlay-rgb) / 0.4);
 }
 
 .allday-toggle.selected .dot {
-  background: #fafaf8;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  background: rgb(var(--ink-rgb));
+  box-shadow: 0 0 6px rgb(var(--overlay-rgb) / 0.8);
 }
 
 .subteam-picker {
@@ -2079,7 +2084,7 @@ select.form-input {
   font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.045);
+  background: rgb(var(--overlay-rgb) / 0.045);
   border: 1px solid var(--surface-border);
   border-radius: 999px;
   transition:
@@ -2092,7 +2097,7 @@ select.form-input {
 
 .subteam-pill:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--overlay-rgb) / 0.08);
 }
 
 .subteam-pill:active {
@@ -2137,7 +2142,7 @@ select.form-input {
 }
 
 .filter-popover .subteam-pill:focus-visible {
-  outline: 2px solid rgba(250, 250, 248, 0.72);
+  outline: 2px solid rgb(var(--ink-rgb) / 0.72);
   outline-offset: 2px;
 }
 
@@ -2162,7 +2167,7 @@ select.form-input {
 }
 
 .event-pill {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  box-shadow: 0 0 0 1px rgb(var(--overlay-rgb) / 0.03) inset;
 }
 
 [data-swipe-surface] {
@@ -2254,8 +2259,8 @@ select.form-input {
 
 .next-event-pill {
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 18px rgba(255, 255, 255, 0.04);
+    0 4px 20px rgb(0 0 0 / calc(0.2 * var(--shadow-k))),
+    0 0 18px rgb(var(--overlay-rgb) / 0.04);
 }
 
 /* ---------- responsive calendar ---------- */
@@ -2415,8 +2420,8 @@ select.form-input {
     margin-bottom: 12px;
     border-radius: 14px;
     box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 8px 24px rgb(0 0 0 / calc(0.2 * var(--shadow-k))),
+      inset 0 1px 0 rgb(var(--overlay-rgb) / 0.05);
   }
 
   .weekday-cell {
@@ -2506,10 +2511,10 @@ select.form-input {
     margin: 2px;
     border-radius: 10px;
     box-shadow:
-      0 8px 18px -6px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(250, 250, 248, 0.15),
-      inset 0 0 0 1px rgba(250, 250, 248, 0.13),
-      inset 0 0 18px rgba(250, 250, 248, 0.045);
+      0 8px 18px -6px rgb(0 0 0 / calc(0.5 * var(--shadow-k))),
+      0 0 0 1px rgb(var(--glow-rgb) / 0.15),
+      inset 0 0 0 1px rgb(var(--glow-rgb) / 0.13),
+      inset 0 0 18px rgb(var(--glow-rgb) / 0.045);
   }
 
   .week-wrap {
