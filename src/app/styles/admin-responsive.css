@@ -44,13 +44,13 @@
     padding: 15px 2px;
     background: transparent;
     border: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    border-bottom: 1px solid rgb(var(--overlay-rgb) / 0.055);
     border-radius: 0;
     box-shadow: none;
   }
 
   .admin-mobile-card:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    border-top: 1px solid rgb(var(--overlay-rgb) / 0.055);
   }
 
   .admin-mobile-card.has-admin-changes {
@@ -63,10 +63,10 @@
   .admin-mobile-card.is-current-user {
     padding: 14px 12px;
     margin: 6px 0;
-    background: rgba(37, 36, 43, 0.94);
+    background: rgb(var(--highlight-rgb) / 0.94);
     border: 1px solid rgba(190, 163, 247, 0.2);
     border-radius: 14px;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 14px 28px rgb(0 0 0 / calc(0.28 * var(--shadow-k)));
     transform: translateY(-2px);
   }
 

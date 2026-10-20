@@ -43,7 +43,7 @@ export function ConfirmationModal({
           style={{
             background: confirmation.isDestructive
               ? "radial-gradient(ellipse, rgba(224, 90, 90, 0.16) 0%, transparent 70%)"
-              : "radial-gradient(ellipse, rgba(250,250,248,0.10) 0%, transparent 70%)",
+              : "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.10) 0%, transparent 70%)",
           }}
         />
         <div style={{ position: "relative" }}>

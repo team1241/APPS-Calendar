@@ -63,7 +63,7 @@ export function ComposerModal({
           className="glow"
           style={{
             background:
-              "radial-gradient(ellipse, rgba(250,250,248,0.10) 0%, transparent 70%)",
+              "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.10) 0%, transparent 70%)",
           }}
         />
         <div

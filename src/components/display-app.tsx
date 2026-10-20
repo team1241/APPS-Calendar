@@ -32,10 +32,10 @@ const VIEW_TRANSITION_MS = 460;
 const noop = () => undefined;
 
 /**
- * @brief Reads the display token from the URL fragment (#token=...), which browsers never send to the server.
+ * @brief Reads a value from the URL fragment (#token=...&theme=light), which browsers never send to the server.
  */
-function readDisplayToken(): string {
-  return new URLSearchParams(window.location.hash.slice(1)).get("token") ?? "";
+function readFragmentParam(key: string): string {
+  return new URLSearchParams(window.location.hash.slice(1)).get(key) ?? "";
 }
 
 /**
@@ -50,7 +50,15 @@ export default function DisplayApp() {
   const [view, setView] = useState<DisplayView>("month");
   const [viewTransition, setViewTransition] = useState<ViewTransition>(null);
 
-  const token = useMemo(readDisplayToken, []);
+  const token = useMemo(() => readFragmentParam("token"), []);
+
+  // Lets the kiosk pin a theme instead of following the device setting.
+  useEffect(() => {
+    const theme = readFragmentParam("theme");
+    if (theme === "light" || theme === "dark") {
+      document.documentElement.dataset.theme = theme;
+    }
+  }, []);
   // Covers both the month grid and the week view so rotating views doesn't refetch.
   const range = useMemo(() => {
     const monthGridStart = addDays(cursor, -cursor.getDay());
