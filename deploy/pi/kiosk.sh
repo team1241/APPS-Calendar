@@ -6,6 +6,9 @@ SERVER="http://localhost:3000"
 URL="$SERVER/display#token=$(cat /opt/apps-calendar/display-token)&theme=light"
 PREFS="$HOME/.config/chromium/Default/Preferences"
 
+log() { logger -t kiosk "$*"; }
+log "starting; clock says $(date)"
+
 # Wait for the calendar server to be ready so the screen doesn't show an error page.
 until curl --silent --output /dev/null "$SERVER"; do
   sleep 2
@@ -13,9 +16,13 @@ done
 
 # The Pi has no clock battery, so after a power cut it starts with the previous evening's time.
 # Wait (up to 2 minutes) for internet time so the calendar opens on the right day.
-for _ in $(seq 1 60); do
+for i in $(seq 1 60); do
   # timesyncd creates this file only after its first successful sync this boot.
-  [ -e /run/systemd/timesync/synchronized ] && break
+  if [ -e /run/systemd/timesync/synchronized ]; then
+    log "time synced after ~$(( (i - 1) * 2 ))s wait; clock says $(date)"
+    break
+  fi
+  [ "$i" -eq 60 ] && log "time not synced after 2 min; starting anyway"
   sleep 2
 done
 
@@ -32,6 +39,7 @@ fi
 # Newer Raspberry Pi OS names it "chromium", older images use "chromium-browser".
 BROWSER="$(command -v chromium || command -v chromium-browser)"
 
+log "launching $BROWSER"
 exec "$BROWSER" \
   --kiosk \
   --noerrdialogs \
