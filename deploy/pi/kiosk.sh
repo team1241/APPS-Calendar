@@ -14,7 +14,8 @@ done
 # The Pi has no clock battery, so after a power cut it starts with the previous evening's time.
 # Wait (up to 2 minutes) for internet time so the calendar opens on the right day.
 for _ in $(seq 1 60); do
-  [ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" = "yes" ] && break
+  # timesyncd creates this file only after its first successful sync this boot.
+  [ -e /run/systemd/timesync/synchronized ] && break
   sleep 2
 done
 
