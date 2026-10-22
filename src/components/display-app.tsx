@@ -29,6 +29,7 @@ const VIEW_ORDER: Record<DisplayView, number> = {
   week: 1,
 };
 const VIEW_TRANSITION_MS = 460;
+const DATE_CHECK_INTERVAL_MS = 60_000;
 const noop = () => undefined;
 
 /**
@@ -107,15 +108,14 @@ export default function DisplayApp() {
     return () => clearTimeout(timer);
   }, [viewTransition]);
 
-  // Reload at midnight so "today" stays correct and new deploys get picked up.
+  // Reload when the date changes (midnight, or the Pi's clock correcting itself after a power cut).
   useEffect(() => {
-    const nextMidnight = new Date(today);
-    nextMidnight.setDate(nextMidnight.getDate() + 1);
-    const timer = setTimeout(
-      () => window.location.reload(),
-      nextMidnight.getTime() - Date.now()
-    );
-    return () => clearTimeout(timer);
+    const timer = setInterval(() => {
+      if (stripTime(new Date()).getTime() !== today.getTime()) {
+        window.location.reload();
+      }
+    }, DATE_CHECK_INTERVAL_MS);
+    return () => clearInterval(timer);
   }, [today]);
 
   if (isUnauthorized) {

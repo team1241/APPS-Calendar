@@ -11,6 +11,13 @@ until curl --silent --output /dev/null "$SERVER"; do
   sleep 2
 done
 
+# The Pi has no clock battery, so after a power cut it starts with the previous evening's time.
+# Wait (up to 2 minutes) for internet time so the calendar opens on the right day.
+for _ in $(seq 1 60); do
+  [ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" = "yes" ] && break
+  sleep 2
+done
+
 # Pretend Chromium closed normally last time, so a power cut never shows "Restore pages?".
 if [ -f "$PREFS" ]; then
   sed -i 's/"exited_cleanly":false/"exited_cleanly":true/; s/"exit_type":"[^"]*"/"exit_type":"Normal"/' "$PREFS"
