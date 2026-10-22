@@ -70,6 +70,7 @@ install -D -m 644 "$BUNDLE/journald-persistent.conf" /etc/systemd/journald.conf.
 mkdir -p /var/log/journal
 systemd-tmpfiles --create --prefix /var/log/journal
 systemctl restart systemd-journald
+journalctl --flush
 
 if command -v tailscale >/dev/null; then
   echo "==> Sharing the calendar on Tailscale"
