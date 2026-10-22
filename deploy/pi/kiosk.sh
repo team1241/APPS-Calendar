@@ -16,6 +16,11 @@ if [ -f "$PREFS" ]; then
   sed -i 's/"exited_cleanly":false/"exited_cleanly":true/; s/"exit_type":"[^"]*"/"exit_type":"Normal"/' "$PREFS"
 fi
 
+# X11 blanks the screen after 10 idle minutes, and nobody can wake the TV, so keep it on.
+if [ -n "$DISPLAY" ] && command -v xset >/dev/null; then
+  xset s off -dpms s noblank
+fi
+
 # Newer Raspberry Pi OS names it "chromium", older images use "chromium-browser".
 BROWSER="$(command -v chromium || command -v chromium-browser)"
 

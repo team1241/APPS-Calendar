@@ -60,6 +60,17 @@ echo "==> Setting the TV to 1080p landscape"
 sudo -u "$KIOSK_USER" mkdir -p "$KIOSK_HOME/.config/kanshi"
 install -o "$KIOSK_USER" -g "$KIOSK_USER" -m 644 "$BUNDLE/kanshi.config" "$KIOSK_HOME/.config/kanshi/config"
 
+echo "==> Keeping the TV screen on (no blanking or monitor sleep)"
+if command -v raspi-config >/dev/null; then
+  raspi-config nonint do_blanking 1
+fi
+
+echo "==> Keeping system logs across reboots"
+install -D -m 644 "$BUNDLE/journald-persistent.conf" /etc/systemd/journald.conf.d/50-calendar-persistent.conf
+mkdir -p /var/log/journal
+systemd-tmpfiles --create --prefix /var/log/journal
+systemctl restart systemd-journald
+
 if command -v tailscale >/dev/null; then
   echo "==> Sharing the calendar on Tailscale"
   # Serve waits forever if it isn't enabled on the tailnet yet; its output has the link to enable it.

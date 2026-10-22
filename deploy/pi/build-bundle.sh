@@ -52,7 +52,8 @@ if [ -f "$SHARP_PKG" ]; then
 fi
 
 cp deploy/pi/install.sh deploy/pi/calendar.service deploy/pi/kiosk.sh \
-  deploy/pi/kiosk.desktop deploy/pi/chromium-kiosk-policy.json deploy/pi/kanshi.config "$STAGE/"
+  deploy/pi/kiosk.desktop deploy/pi/chromium-kiosk-policy.json deploy/pi/kanshi.config \
+  deploy/pi/journald-persistent.conf "$STAGE/"
 chmod +x "$STAGE/install.sh" "$STAGE/kiosk.sh"
 (umask 077 && printf '%s' "$DISPLAY_TOKEN" > "$STAGE/display-token")
 

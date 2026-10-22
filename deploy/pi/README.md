@@ -77,6 +77,7 @@ The zip contains `.env` and the display token. Copy it only to the Pi and don't 
 | `kiosk.sh` | Waits for the website, then opens Chromium full-screen on `/display` with the display token. |
 | `kiosk.desktop` | Makes `kiosk.sh` run when the Pi's desktop starts. |
 | `kanshi.config` | Sets the TV to 1920×1080 at 60Hz, landscape. 4K makes everything tiny and is slow on the Pi. |
+| `journald-persistent.conf` | Keeps system logs across reboots and power cuts (capped at 50 MB), so `journalctl` can show what happened before a restart. |
 | `chromium-kiosk-policy.json` | Chromium settings that block popups (translate, notifications, password saving, "restore pages", sign-in prompts). Chromium is forced to follow these. |
 
 ## Something's wrong with the screen
@@ -85,6 +86,8 @@ The zip contains `.env` and the display token. Copy it only to the Pi and don't 
 | --- | --- |
 | Error page or blank screen | `systemctl status calendar`. If it isn't "active (running)", read the logs with `journalctl -u calendar -n 50`. |
 | Website works on your laptop but the TV is frozen | `sudo reboot` |
+| TV goes black after about 10 minutes | Screen blanking is back on. Check that `/etc/X11/xorg.conf.d/10-blanking.conf` exists (`sudo raspi-config nonint do_blanking 1` recreates it), then reboot. |
+| Need to know what happened before a restart | `journalctl --list-boots` lists past boots, and `journalctl -b -1` shows the previous one. |
 | TV shows the sign-in page | The kiosk is on the wrong page. `URL` in `/opt/apps-calendar/kiosk.sh` should point at `/display`. |
 | TV says "Display not authorized" | The token on the Pi (`/opt/apps-calendar/display-token`) doesn't match `DISPLAY_TOKEN` in Convex production. Rebuild and reinstall the bundle with the right `.env.production.local`. |
 | **Rotate the display token** (e.g. after a leak) | Generate one with `openssl rand -hex 32`. Put it in `.env.production.local`, run `npx convex env set DISPLAY_TOKEN <token> --prod`, then redeploy the bundle. |
