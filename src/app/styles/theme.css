@@ -1,0 +1,76 @@
+/* Theme tokens. Dark is the default; light follows the device setting, and html[data-theme] forces either. */
+:root {
+  --color-scheme: dark;
+  --overlay-rgb: 255 255 255;
+  --ink-rgb: 250 250 248;
+  --glow-rgb: 250 250 248;
+  --on-ink: #0e0e10;
+  --panel-rgb: 15 15 17;
+  --popover-rgb: 27 27 30;
+  --highlight-rgb: 37 36 43;
+  --highlight-hover-rgb: 44 42 51;
+  --shadow-k: 1;
+  --grad-from: #1a1a1d;
+  --grad-to: #0a0a0b;
+  --danger-rgb: 240 163 163;
+  --danger-text: #f0a3a3;
+  --danger-text-strong: #ffc1c1;
+  --accent-text: #cde4ff;
+  --accent-icon: #73b4ff;
+  --role-admin-text: #b9d9ff;
+  --role-mentor-text: #dfd0ff;
+  --badge-text: #f0e8ff;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --color-scheme: light;
+    --bg: #f5f5f3;
+    --overlay-rgb: 17 17 20;
+    --ink-rgb: 22 22 26;
+    --glow-rgb: 255 255 255;
+    --on-ink: #fafaf8;
+    --panel-rgb: 255 255 255;
+    --popover-rgb: 255 255 255;
+    --highlight-rgb: 243 239 252;
+    --highlight-hover-rgb: 236 230 250;
+    --shadow-k: 0.4;
+    --grad-from: #ffffff;
+    --grad-to: #ececea;
+    --danger-rgb: 185 28 28;
+    --danger-text: #b91c1c;
+    --danger-text-strong: #991b1b;
+    --accent-text: #1d4ed8;
+    --accent-icon: #2563eb;
+    --role-admin-text: #1e40af;
+    --role-mentor-text: #6d28d9;
+    --badge-text: #5b21b6;
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"] {
+  --color-scheme: light;
+  --bg: #f5f5f3;
+  --overlay-rgb: 17 17 20;
+  --ink-rgb: 22 22 26;
+  --glow-rgb: 255 255 255;
+  --on-ink: #fafaf8;
+  --panel-rgb: 255 255 255;
+  --popover-rgb: 255 255 255;
+  --highlight-rgb: 243 239 252;
+  --highlight-hover-rgb: 236 230 250;
+  --shadow-k: 0.4;
+  --grad-from: #ffffff;
+  --grad-to: #ececea;
+  --danger-rgb: 185 28 28;
+  --danger-text: #b91c1c;
+  --danger-text-strong: #991b1b;
+  --accent-text: #1d4ed8;
+  --accent-icon: #2563eb;
+  --role-admin-text: #1e40af;
+  --role-mentor-text: #6d28d9;
+  --badge-text: #5b21b6;
+  color-scheme: light;
+}

@@ -19,7 +19,7 @@ const getSubteamStyle = (subteamName: string): CSSProperties => {
   const categoryKey = normalizeSubteamName(subteamName);
   const color = categoryKey
     ? CATEGORIES[categoryKey].color
-    : "rgba(250, 250, 248, 0.72)";
+    : "rgb(var(--ink-rgb) / 0.72)";
   return { "--admin-subteam-color": color } as CSSProperties;
 };
 

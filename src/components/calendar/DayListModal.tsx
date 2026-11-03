@@ -64,7 +64,7 @@ export function DayListModal({
           className="glow"
           style={{
             background:
-              "radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%)",
+              "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.08) 0%, transparent 70%)",
           }}
         />
         <div className="head">

@@ -76,13 +76,13 @@
   font-family: var(--font-head);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(250, 250, 248, 0.68);
+  color: rgb(var(--ink-rgb) / 0.68);
   text-align: left;
   text-transform: none;
   letter-spacing: 0.01em;
   background: transparent;
   border-top: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  border-bottom: 1px solid rgb(var(--overlay-rgb) / 0.055);
 }
 
 .admin-users-table th:first-child {
@@ -108,8 +108,8 @@
 .admin-users-table td {
   padding: 15px 14px;
   vertical-align: middle;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
-  border-bottom-color: rgba(255, 255, 255, 0.045);
+  border-bottom: 1px solid rgb(var(--overlay-rgb) / 0.055);
+  border-bottom-color: rgb(var(--overlay-rgb) / 0.045);
   transition:
     background 150ms ease-out,
     opacity 150ms ease-out;
@@ -120,7 +120,7 @@
 }
 
 .admin-users-table tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.014);
+  background: rgb(var(--overlay-rgb) / 0.014);
 }
 
 .admin-users-table tr.has-admin-changes td {
@@ -139,18 +139,18 @@
 .admin-users-table tr.is-current-user {
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / calc(0.28 * var(--shadow-k))));
   transform: translateY(-2px);
 }
 
 .admin-users-table tr.is-current-user td {
-  background: rgba(37, 36, 43, 0.94);
+  background: rgb(var(--highlight-rgb) / 0.94);
   border-top: 1px solid rgba(190, 163, 247, 0.2);
   border-bottom: 1px solid rgba(190, 163, 247, 0.2);
 }
 
 .admin-users-table tr.is-current-user:hover td {
-  background: rgba(44, 42, 51, 0.97);
+  background: rgb(var(--highlight-hover-rgb) / 0.97);
 }
 
 .admin-users-table tr.is-current-user td:first-child {
@@ -184,7 +184,7 @@
   font-family: var(--font-head);
   font-size: 13px;
   font-weight: 600;
-  color: rgba(250, 250, 248, 0.94);
+  color: rgb(var(--ink-rgb) / 0.94);
   white-space: nowrap;
 }
 
@@ -192,7 +192,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 10px;
-  color: rgba(250, 250, 248, 0.5);
+  color: rgb(var(--ink-rgb) / 0.5);
   white-space: nowrap;
 }
 
@@ -214,14 +214,14 @@
   justify-content: center;
   min-width: 32px;
   min-height: 32px;
-  color: rgba(240, 163, 163, 0.62);
+  color: rgb(var(--danger-rgb) / 0.62);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 9px;
 }
 
 .admin-delete-button:hover:not(:disabled) {
-  color: #ffc1c1;
+  color: var(--danger-text-strong);
   background: rgba(224, 90, 90, 0.11);
   border-color: rgba(224, 90, 90, 0.2);
 }
@@ -235,8 +235,8 @@
 .admin-restore-button {
   padding: 5px 8px;
   font-size: 10px;
-  color: rgba(250, 250, 248, 0.72);
-  border-color: rgba(255, 255, 255, 0.12);
+  color: rgb(var(--ink-rgb) / 0.72);
+  border-color: rgb(var(--overlay-rgb) / 0.12);
 }
 
 .admin-empty-state {
@@ -279,12 +279,12 @@
   width: max-content;
   max-width: calc(100vw - 32px);
   padding: 8px 9px 8px 14px;
-  background: rgba(29, 29, 32, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.17);
+  background: rgb(var(--popover-rgb) / 0.92);
+  border: 1px solid rgb(var(--overlay-rgb) / 0.17);
   border-radius: 18px;
   box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    0 24px 80px rgb(0 0 0 / calc(0.58 * var(--shadow-k))),
+    inset 0 1px 0 rgb(var(--overlay-rgb) / 0.07);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   transform: translateX(-50%);
@@ -319,7 +319,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 10px;
-  color: #f0a3a3;
+  color: var(--danger-text);
   white-space: nowrap;
 }
 
@@ -351,22 +351,22 @@
 }
 
 .admin-discard-button {
-  color: rgba(250, 250, 248, 0.62);
+  color: rgb(var(--ink-rgb) / 0.62);
   background: transparent;
 }
 
 .admin-discard-button:hover:not(:disabled) {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 .admin-save-button {
-  color: #111216;
-  background: #fafaf8;
+  color: var(--on-ink);
+  background: rgb(var(--ink-rgb));
 }
 
 .admin-save-button:hover:not(:disabled) {
-  background: #fff;
+  background: rgb(var(--overlay-rgb));
 }
 
 .admin-discard-button:disabled,
@@ -419,12 +419,12 @@
     margin: 11px 0 0;
     font-size: 10px;
     color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.035);
+    background: rgb(var(--overlay-rgb) / 0.035);
     border-radius: 9px;
   }
 
   .admin-delete-notice {
-    color: #f0a3a3;
+    color: var(--danger-text);
     background: rgba(224, 90, 90, 0.07);
   }
 

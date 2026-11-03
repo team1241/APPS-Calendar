@@ -96,7 +96,7 @@
 .carousel-btn {
   padding: 6px 10px;
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgb(var(--overlay-rgb) / 0.14);
   border-radius: 999px;
   transition:
     background 150ms ease-out,
@@ -105,7 +105,7 @@
 
 .carousel-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--overlay-rgb) / 0.06);
 }
 
 /* Wall display (/display): fill the screen and hide controls nobody can click. */

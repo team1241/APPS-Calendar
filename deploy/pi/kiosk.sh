@@ -3,7 +3,7 @@
 
 SERVER="http://localhost:3000"
 # The token goes after "#" so it stays in the browser and never reaches server logs.
-URL="$SERVER/display#token=$(cat /opt/apps-calendar/display-token)"
+URL="$SERVER/display#token=$(cat /opt/apps-calendar/display-token)&theme=light"
 PREFS="$HOME/.config/chromium/Default/Preferences"
 
 # Wait for the calendar server to be ready so the screen doesn't show an error page.
