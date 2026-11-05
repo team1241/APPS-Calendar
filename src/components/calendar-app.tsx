@@ -387,7 +387,7 @@ export default function CalendarApp() {
             onSignOut={handleSignOut}
             onToggleCarousel={() => {
               setCarouselMode(true);
-              setView("month");
+              setView("week");
             }}
             onToggleFilters={handleToggleFilters}
             onToggleSubteam={handleToggleSubteamFilter}

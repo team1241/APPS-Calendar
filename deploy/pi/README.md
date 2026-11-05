@@ -17,7 +17,7 @@ npm run bundle:pi  ──scp zip──▶  sudo ./apps-calendar/install.sh
                                    └─ kiosk.desktop      Chromium full-screen on the TV (/display)
 ```
 
-The TV opens **`/display`**, a read-only page that needs no login. It rotates month → week → announcements every 15 seconds and reloads itself at midnight. Everyone else uses the normal site (`/`), which requires signing in.
+The TV opens **`/display`**, a read-only page that needs no login. It rotates week → month → announcements every 15 seconds and reloads itself at midnight. Everyone else uses the normal site (`/`), which requires signing in.
 
 ## Who can see what
 
