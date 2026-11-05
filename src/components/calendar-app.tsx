@@ -39,7 +39,7 @@ export default function CalendarApp() {
     "calendar"
   );
   const [adminDirty, setAdminDirty] = useState(false);
-  const [view, setView] = useState<"month" | "week" | "announcements">("month");
+  const [view, setView] = useState<"month" | "week" | "announcements">("week");
   const [carouselMode, setCarouselMode] = useState(false);
   const [cursor, setCursor] = useState(
     () => new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -105,7 +105,7 @@ export default function CalendarApp() {
 
   const handleSetView = useCallback(
     (v: "month" | "week" | "announcements") => {
-      const viewOrder = { announcements: 2, month: 0, week: 1 } as const;
+      const viewOrder = { announcements: 2, month: 1, week: 0 } as const;
       if (v !== view) {
         setViewTransition(
           viewOrder[v] > viewOrder[view] ? "from-right" : "from-left"
