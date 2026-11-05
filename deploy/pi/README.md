@@ -2,7 +2,7 @@
 
 The Pi does two jobs:
 
-1. **Runs the calendar website** for team members on our Tailscale network (that's how admins reach the admin panel).
+1. **Runs the calendar website** for team members. Tailscale Funnel puts it on the public internet at `https://1241-calendar.tailf74d8d.ts.net`, so nobody needs Tailscale to use it.
 2. **Shows the calendar full-screen** on the hanging TV. The TV has no keyboard or mouse, so everything here is set up to start on its own and never show a popup.
 
 All calendar data lives in Convex (in the cloud), not on the Pi. If the Pi dies, nothing is lost. Install the bundle on a new one.
@@ -13,7 +13,7 @@ The code is **built on your laptop** into one zip file. The Pi never needs the g
 Your laptop                          Raspberry Pi
 npm run bundle:pi  ──scp zip──▶  sudo ./apps-calendar/install.sh
                                    ├─ calendar.service   website on localhost:3000 (starts at boot)
-                                   ├─ tailscale serve    https://<pi-name>.<tailnet>.ts.net
+                                   ├─ tailscale funnel   https://<pi-name>.<tailnet>.ts.net (public)
                                    └─ kiosk.desktop      Chromium full-screen on the TV (/display)
 ```
 
@@ -24,19 +24,16 @@ The TV opens **`/display`**, a read-only page that needs no login. It rotates mo
 | Who | How they get in |
 | --- | --- |
 | The TV | Opens `/display` with a secret **display token** that only the Pi has. No login. |
-| Team members | Must be on our tailnet (the Pi is shared with them in Tailscale) **and** sign in with an invited account. |
-| Anyone else | Nothing. The website only listens on the Pi itself, sign-up is invite-only, and the database refuses reads without a login or the display token. |
+| Team members | Sign in with an email a mentor has added. No Tailscale needed. |
+| Anyone else | Only the sign-in screen. Sign-up is limited to added emails, and the database refuses reads without a login or the display token. |
 
-**Add a team member:**
+**Add a team member:** a mentor signs in, opens the avatar menu → **Admin panel**, and adds their email under **Add users**. They join as a student.
 
-1. In the Tailscale admin console, open **Machines → `1241-calendar` → Share**, and send them the invite.
-2. In the Clerk dashboard, open **Users → Invite**, and invite their email.
-
-**Remove someone:** remove their share in Tailscale, and delete their user in Clerk.
+**Remove someone:** in the admin panel, delete their user and save. That also removes their email from the sign-up allowlist.
 
 ## Deploying (first time or an update, same steps)
 
-You need: the repo on your laptop, the `.env` file in the repo root (ask a mentor), and Tailscale running.
+You need: the repo on your laptop, the `.env` file in the repo root (ask a mentor), and Tailscale running (deploying still goes over Tailscale SSH).
 
 You also need `.env.production.local` in the repo root (ask a mentor). It points the build at the **production** Convex database (`patient-frog-886`), so the TV doesn't use someone's personal dev database. It also holds the display token:
 
@@ -99,4 +96,5 @@ Use Raspberry Pi OS **with desktop**, **64-bit**, on a Pi 4 or 5, and connect it
 
 1. **Install the bundle** using the deploy steps above. `install.sh` installs Node.js automatically if it's missing.
 2. **Turn on auto-login.** Run `sudo raspi-config`, go to **System Options → Boot / Auto Login → Desktop Autologin**, then reboot. With no mouse plugged in, the cursor doesn't show.
-3. **Optional: check the popup blockers.** Turn on VNC with `sudo raspi-config` (**Interface Options → VNC**). Connect from your laptop, open `chrome://policy`, and check that every setting shows as applied.
+3. **Allow Funnel for the Pi.** In the Tailscale admin console, open **Access controls** and give the Pi the `funnel` attribute (a `nodeAttrs` entry with `"attr": ["funnel"]`). Without it, `install.sh` can't make the site public and prints a link to fix it.
+4. **Optional: check the popup blockers.** Turn on VNC with `sudo raspi-config` (**Interface Options → VNC**). Connect from your laptop, open `chrome://policy`, and check that every setting shows as applied.

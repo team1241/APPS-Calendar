@@ -73,11 +73,11 @@ systemctl restart systemd-journald
 journalctl --flush
 
 if command -v tailscale >/dev/null; then
-  echo "==> Sharing the calendar on Tailscale"
-  # Serve waits forever if it isn't enabled on the tailnet yet; its output has the link to enable it.
+  echo "==> Putting the calendar on the internet with Tailscale Funnel"
+  # Funnel waits forever if it isn't enabled on the tailnet yet; its output has the link to enable it.
   # "localhost" (not the default 127.0.0.1) because the server may listen on IPv6 ::1.
-  if ! timeout 15 tailscale serve --bg http://localhost:3000; then
-    echo "Tailscale Serve not set up. Open the link above, then run: sudo tailscale serve --bg http://localhost:3000" >&2
+  if ! timeout 15 tailscale funnel --bg http://localhost:3000; then
+    echo "Tailscale Funnel not set up. Open the link above (or allow Funnel for this Pi in the Tailscale policy), then run: sudo tailscale funnel --bg http://localhost:3000" >&2
   fi
 fi
 
