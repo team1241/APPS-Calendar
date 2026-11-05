@@ -20,6 +20,7 @@ import {
   isAdminRole,
   type UserRole,
 } from "./lib/userAccess";
+import { claimInvite } from "./lib/userInvites";
 import {
   getIdentityProfile,
   getMissingProfilePatch,
@@ -156,6 +157,7 @@ export const ensureUser = mutation({
       updatedAt: Date.now(),
       userType: "mentor",
     });
+    await claimInvite(ctx, userId);
     await ctx.scheduler.runAfter(
       0,
       internal.userMaintenance.syncUserProfileFromClerk,

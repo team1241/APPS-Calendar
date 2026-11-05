@@ -33,6 +33,15 @@ export default defineSchema({
     .index("by_clerkId", ["clerkId"])
     .index("by_email", ["email"]),
 
+  // Emails a mentor allowlisted in Clerk; the role is applied when that email first signs in.
+  userInvites: defineTable({
+    email: v.string(),
+    role: v.literal("student"),
+    clerkAllowlistId: v.string(),
+    invitedBy: v.id("users"),
+    updatedAt: v.number(),
+  }).index("by_email", ["email"]),
+
   events: defineTable({
     title: v.string(),
     startTime: v.number(),

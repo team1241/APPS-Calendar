@@ -18,9 +18,11 @@ import type * as lib_auth from "../lib/auth.js";
 import type * as lib_calendarReads from "../lib/calendarReads.js";
 import type * as lib_clerk from "../lib/clerk.js";
 import type * as lib_userAccess from "../lib/userAccess.js";
+import type * as lib_userInvites from "../lib/userInvites.js";
 import type * as lib_userProfiles from "../lib/userProfiles.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as subteams from "../subteams.js";
+import type * as userInvites from "../userInvites.js";
 import type * as userMaintenance from "../userMaintenance.js";
 import type * as users from "../users.js";
 
@@ -41,9 +43,11 @@ declare const fullApi: ApiFromModules<{
   "lib/calendarReads": typeof lib_calendarReads;
   "lib/clerk": typeof lib_clerk;
   "lib/userAccess": typeof lib_userAccess;
+  "lib/userInvites": typeof lib_userInvites;
   "lib/userProfiles": typeof lib_userProfiles;
   subscriptions: typeof subscriptions;
   subteams: typeof subteams;
+  userInvites: typeof userInvites;
   userMaintenance: typeof userMaintenance;
   users: typeof users;
 }>;
