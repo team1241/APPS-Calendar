@@ -46,3 +46,9 @@ export const deleteClerkAllowlistIdentifier = async (allowlistId: string, clerkS
   const errorBody = await response.text();
   throw new Error(`Clerk allowlist removal failed (${response.status}): ${errorBody || "unknown error"}`);
 };
+
+/** @brief Removes an email from the sign-up allowlist; a no-op when it isn't listed. */
+export const removeClerkAllowlistEmail = async (email: string, clerkSecretKey: string): Promise<void> => {
+  const existing = await findAllowlistIdentifier(email, clerkSecretKey);
+  if (existing) await deleteClerkAllowlistIdentifier(existing.id, clerkSecretKey);
+};
