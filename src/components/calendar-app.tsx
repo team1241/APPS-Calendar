@@ -85,7 +85,9 @@ export default function CalendarApp() {
 
   const currentUserRole: UserRole =
     currentUser?.role ?? (currentUser?.isAdmin ? "admin" : "member");
-  const canManageUsers = currentUserRole !== "member";
+  const canManageUsers =
+    currentUserRole === "admin" || currentUserRole === "mentor";
+  const canCreateEvents = currentUserRole !== "member";
 
   const selectedEvent = useMemo(() => {
     if (!selectedEventId) {
@@ -149,21 +151,27 @@ export default function CalendarApp() {
     setDayListScrollTop(0);
   }, []);
   const handleOpenComposer = useCallback(() => {
-    if (!canManageUsers) {
+    if (!canCreateEvents) {
       return;
     }
     setComposerMode("event");
     setComposerError(null);
     setComposerOpen(true);
-  }, [canManageUsers]);
+  }, [canCreateEvents]);
   const handleCloseComposer = useCallback(() => {
     setComposerOpen(false);
     setComposerError(null);
   }, []);
-  const handleComposerTab = useCallback((m: "event" | "announcement") => {
-    setComposerMode(m);
-    setComposerError(null);
-  }, []);
+  const handleComposerTab = useCallback(
+    (m: "event" | "announcement") => {
+      if (m === "announcement" && !canManageUsers) {
+        return;
+      }
+      setComposerMode(m);
+      setComposerError(null);
+    },
+    [canManageUsers]
+  );
 
   const handleRequestDelete = useCallback(
     (event: CalendarEvent | CalendarAnnouncement) => {
@@ -345,7 +353,12 @@ export default function CalendarApp() {
   const userName = currentUser
     ? `${currentUser.firstName} ${currentUser.lastName}`.trim() || "User"
     : user?.fullName || "User";
-  const isAdmin = canManageUsers;
+  const canDeleteSelected =
+    canManageUsers ||
+    (canCreateEvents &&
+      selectedEvent !== null &&
+      "authorId" in selectedEvent &&
+      selectedEvent.authorId === currentUser?._id);
   const adminPanelOpen = appSection === "admin" && canManageUsers;
 
   return (
@@ -361,12 +374,12 @@ export default function CalendarApp() {
         {!carouselMode && (
           <TopBar
             adminPanelOpen={adminPanelOpen}
+            canCreateEvents={canCreateEvents}
             canManageUsers={canManageUsers}
             currentUserRole={currentUserRole}
             events={events}
             filtersJustOpened={filtersJustOpened}
             filtersOpen={filtersOpen}
-            isAdmin={isAdmin}
             onBackToCalendar={handleBackToCalendar}
             onOpenAdminPanel={handleOpenAdminPanel}
             onOpenComposer={handleOpenComposer}
@@ -439,8 +452,8 @@ export default function CalendarApp() {
         {!adminPanelOpen && selectedEvent && (
           <EventModal
             cameFromDayList={eventModalOrigin === "daylist"}
+            canDelete={canDeleteSelected}
             event={selectedEvent}
-            isAdmin={isAdmin}
             onBackToDayList={handleBackToDayList}
             onClose={handleCloseModal}
             onRequestDelete={handleRequestDelete}
@@ -448,6 +461,7 @@ export default function CalendarApp() {
         )}
         {!adminPanelOpen && composerOpen && (
           <ComposerModal
+            allowAnnouncements={canManageUsers}
             error={composerError}
             mode={composerMode}
             onClose={handleCloseComposer}

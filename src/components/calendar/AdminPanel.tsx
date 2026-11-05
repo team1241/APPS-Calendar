@@ -41,6 +41,7 @@ const ROLE_FILTER_OPTIONS: readonly AdminSelectOption[] = [
   { label: "All roles", value: "all" },
   { label: "Mentors", value: "mentor" },
   { label: "Admins", value: "admin" },
+  { label: "Students", value: "student" },
   { label: "Members", value: "member" },
 ];
 
@@ -154,6 +155,7 @@ export function AdminPanel({
         value: "mentor",
       },
       { label: "Admin", value: "admin" },
+      { label: "Student", value: "student" },
       { label: "Member", value: "member" },
     ],
     [currentUserRole]

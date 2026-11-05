@@ -21,14 +21,14 @@ import { SubteamTags } from "./SubteamTags";
 export function EventModal({
   event,
   cameFromDayList,
-  isAdmin,
+  canDelete,
   onRequestDelete,
   onClose,
   onBackToDayList,
 }: {
   event: CalendarEvent | CalendarAnnouncement | null;
   cameFromDayList: boolean;
-  isAdmin: boolean;
+  canDelete: boolean;
   onRequestDelete: (event: CalendarEvent | CalendarAnnouncement) => void;
   onClose: () => void;
   onBackToDayList: () => void;
@@ -155,7 +155,7 @@ export function EventModal({
               ? (event as CalendarAnnouncement).snippet
               : calEvent.info || ""}
           </p>
-          {isAdmin && (
+          {canDelete && (
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button
                 aria-label="Delete event"

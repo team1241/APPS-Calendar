@@ -11,12 +11,14 @@ import {
 import { SubteamPill } from "./SubteamPill";
 
 export function ComposerModal({
+  allowAnnouncements,
   mode,
   error,
   onClose,
   onSwitchMode,
   onSubmit,
 }: {
+  allowAnnouncements: boolean;
   mode: "event" | "announcement";
   error: string | null;
   onClose: () => void;
@@ -76,30 +78,32 @@ export function ComposerModal({
         >
           <div className="head">
             <div className="head-left">
-              <div className="composer-tabs" ref={tabsRef}>
-                <div className="tab-indicator" ref={tabIndicatorRef} />
-                <button
-                  className={["composer-tab", mode === "event" && "active"]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => onSwitchMode("event")}
-                  type="button"
-                >
-                  Event
-                </button>
-                <button
-                  className={[
-                    "composer-tab",
-                    mode === "announcement" && "active",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => onSwitchMode("announcement")}
-                  type="button"
-                >
-                  Announcement
-                </button>
-              </div>
+              {allowAnnouncements && (
+                <div className="composer-tabs" ref={tabsRef}>
+                  <div className="tab-indicator" ref={tabIndicatorRef} />
+                  <button
+                    className={["composer-tab", mode === "event" && "active"]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => onSwitchMode("event")}
+                    type="button"
+                  >
+                    Event
+                  </button>
+                  <button
+                    className={[
+                      "composer-tab",
+                      mode === "announcement" && "active",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => onSwitchMode("announcement")}
+                    type="button"
+                  >
+                    Announcement
+                  </button>
+                </div>
+              )}
             </div>
             <button
               aria-label="Close"

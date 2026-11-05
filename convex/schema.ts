@@ -21,6 +21,7 @@ export default defineSchema({
     role: v.optional(
       v.union(
         v.literal("member"),
+        v.literal("student"),
         v.literal("admin"),
         v.literal("mentor"),
       ),

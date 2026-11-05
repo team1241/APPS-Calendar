@@ -17,6 +17,7 @@ export function toCalendarEvents(
   }
   return convexEvents.map((event) => ({
     allDay: event.allDay,
+    authorId: event.author,
     createdAt: new Date(event.updatedAt),
     end: new Date(event.endTime),
     id: event._id,

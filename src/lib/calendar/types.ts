@@ -2,6 +2,7 @@ export type ViewTransition = null | "from-left" | "from-right";
 
 export interface CalendarEvent {
   allDay: boolean;
+  authorId?: string;
   category?: "assembly" | "electrical" | "manufacturing" | "programming";
   createdAt?: Date;
   end: Date;

@@ -17,6 +17,7 @@ import {
 import {
   assertCanChangeUser,
   getUserRole,
+  isAdminRole,
   type UserRole,
 } from "./lib/userAccess";
 import {
@@ -43,6 +44,7 @@ const userTypeValidator = v.union(
 
 const userRoleValidator = v.union(
   v.literal("member"),
+  v.literal("student"),
   v.literal("admin"),
   v.literal("mentor")
 );
@@ -51,7 +53,7 @@ const withNormalizedAccess = (user: Doc<"users">) => {
   const role = getUserRole(user);
   return {
     ...user,
-    isAdmin: role !== "member",
+    isAdmin: isAdminRole(role),
     role,
   };
 };
@@ -176,7 +178,7 @@ export const completeSignup = mutation({
     const role = getUserRole(user);
     await ctx.db.patch("users", user._id, {
       firstName: args.firstName,
-      isAdmin: role !== "member",
+      isAdmin: isAdminRole(role),
       isSignupComplete: true,
       lastName: args.lastName,
       role,
@@ -250,7 +252,7 @@ export const saveAdminChanges = mutation({
       assertCanChangeUser(actor, target, change.role);
       await validateSubteamIds(ctx, change.subteams);
       await ctx.db.patch("users", target._id, {
-        isAdmin: change.role !== "member",
+        isAdmin: isAdminRole(change.role),
         role: change.role,
         subteams: change.subteams,
         updatedAt: Date.now(),
@@ -324,7 +326,7 @@ export const setRoleByEmail = internalMutation({
       );
     }
     await ctx.db.patch("users", matches[0]._id, {
-      isAdmin: args.role !== "member",
+      isAdmin: isAdminRole(args.role),
       role: args.role,
       updatedAt: Date.now(),
     });
