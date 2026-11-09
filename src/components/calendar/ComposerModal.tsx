@@ -3,9 +3,8 @@ import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useLayoutEffect, useRef } from "react";
 import {
-  CATEGORIES,
   type CalendarEvent,
-  type CategoryKey,
+  FILTER_CATEGORY_ORDER,
   positionPillIndicator,
   toDateInputValue,
 } from "@/lib/calendar/calendar";
@@ -230,12 +229,7 @@ export function ComposerModal({
                     Subteams - select at least one
                   </span>
                   <div className="subteam-pill-row">
-                    {(
-                      Object.entries(CATEGORIES) as [
-                        CategoryKey,
-                        { label: string; color: string },
-                      ][]
-                    ).map(([key]) => (
+                    {FILTER_CATEGORY_ORDER.map((key) => (
                       <SubteamPill
                         categoryKey={key}
                         includeDataSubteam

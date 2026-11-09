@@ -9,7 +9,7 @@ export const seedMockData = mutation({ args: {}, handler: async (ctx) => {
   const user = await requireAdmin(ctx); const eventTypeName = "standard events";
   const existingEventType = await ctx.db.query("eventTypes").withIndex("by_name", (q) => q.eq("name", eventTypeName)).unique();
   const eventTypeId = existingEventType?._id ?? (await ctx.db.insert("eventTypes", { name: eventTypeName, updatedAt: Date.now() }));
-  const subteamNames = ["Programming", "Manufacturing", "Electrical", "Design"];
+  const subteamNames = ["General", "Programming", "Manufacturing", "Electrical", "Design"];
   const subteamIds = new Map<string, Id<"subteams">>();
   for (const subteamName of subteamNames) { const existingSubteam = await ctx.db.query("subteams").withIndex("by_subteamName", (q) => q.eq("subteamName", subteamName)).unique(); const subteamId = existingSubteam?._id ?? (await ctx.db.insert("subteams", { subteamName, updatedAt: Date.now() })); subteamIds.set(subteamName, subteamId); }
   const programming = subteamIds.get("Programming"); const manufacturing = subteamIds.get("Manufacturing"); const electrical = subteamIds.get("Electrical"); const design = subteamIds.get("Design");
