@@ -1,9 +1,11 @@
+import type { CategoryKey } from "./categories";
+
 export type ViewTransition = null | "from-left" | "from-right";
 
 export interface CalendarEvent {
   allDay: boolean;
   authorId?: string;
-  category?: "assembly" | "electrical" | "manufacturing" | "programming";
+  category?: CategoryKey;
   createdAt?: Date;
   end: Date;
   id: string;
@@ -12,7 +14,7 @@ export interface CalendarEvent {
   organizer?: string;
   snippet?: string;
   start: Date;
-  subteams?: ("assembly" | "electrical" | "manufacturing" | "programming")[];
+  subteams?: CategoryKey[];
   title: string;
 }
 

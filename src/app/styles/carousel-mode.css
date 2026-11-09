@@ -118,7 +118,9 @@
   display: none;
 }
 
+/* The TV has no input, so a parked pointer must never trigger hover or click states. */
 .display-mode,
 .display-mode * {
+  pointer-events: none !important;
   cursor: none !important;
 }

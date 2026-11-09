@@ -3,6 +3,7 @@ import type { CalendarEvent } from "./types";
 export const CATEGORIES = {
   assembly: { color: "#B79BFA", label: "Design" },
   electrical: { color: "#5FD0A0", label: "Electrical" },
+  general: { color: "#FF6B6B", label: "General" },
   manufacturing: { color: "#F0A35A", label: "Manufacturing" },
   programming: { color: "#73B4FF", label: "Programming" },
 } as const;
@@ -10,6 +11,7 @@ export const CATEGORIES = {
 export type CategoryKey = keyof typeof CATEGORIES;
 
 export const FILTER_CATEGORY_ORDER: CategoryKey[] = [
+  "general",
   "programming",
   "manufacturing",
   "electrical",
@@ -39,6 +41,9 @@ export function isEventVisible(
 
 export function normalizeSubteamName(name: string): CategoryKey | null {
   const lower = name.toLowerCase().trim();
+  if (lower === "general") {
+    return "general";
+  }
   if (lower.includes("program")) {
     return "programming";
   }

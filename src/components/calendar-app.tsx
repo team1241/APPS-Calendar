@@ -29,6 +29,9 @@ import { SignInScreen } from "./calendar/SignInScreen";
 import { TopBar } from "./calendar/TopBar";
 import { WeekView } from "./calendar/WeekView";
 
+/** Start hour for an event created by clicking a day in the month view. */
+const DEFAULT_EVENT_START_HOUR = 9;
+
 export default function CalendarApp() {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
@@ -58,6 +61,7 @@ export default function CalendarApp() {
   );
   const [composerError, setComposerError] = useState<string | null>(null);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
+  const [composerStart, setComposerStart] = useState<Date | null>(null);
   const [swipeEnter, setSwipeEnter] = useState<
     null | "from-left" | "from-right"
   >(null);
@@ -156,10 +160,26 @@ export default function CalendarApp() {
       return;
     }
     setEditingEvent(null);
+    setComposerStart(null);
     setComposerMode("event");
     setComposerError(null);
     setComposerOpen(true);
   }, [canCreateEvents]);
+  const handleCreateEventAt = useCallback((start: Date) => {
+    setEditingEvent(null);
+    setComposerStart(start);
+    setComposerMode("event");
+    setComposerError(null);
+    setComposerOpen(true);
+  }, []);
+  const handleCreateEventOnDay = useCallback(
+    (date: Date) => {
+      const start = new Date(date);
+      start.setHours(DEFAULT_EVENT_START_HOUR, 0, 0, 0);
+      handleCreateEventAt(start);
+    },
+    [handleCreateEventAt]
+  );
   const handleEditEvent = useCallback((event: CalendarEvent) => {
     setSelectedEventId(null);
     setEventModalOrigin(null);
@@ -173,6 +193,7 @@ export default function CalendarApp() {
     setComposerOpen(false);
     setComposerError(null);
     setEditingEvent(null);
+    setComposerStart(null);
   }, []);
   const handleComposerTab = useCallback(
     (m: "event" | "announcement") => {
@@ -420,6 +441,7 @@ export default function CalendarApp() {
           <MonthView
             cursor={cursor}
             events={visibleEvents}
+            onCreateEvent={canCreateEvents ? handleCreateEventOnDay : undefined}
             onNextMonth={handleNextMonth}
             onOpenDayList={handleOpenDayList}
             onOpenEvent={handleOpenEvent}
@@ -434,6 +456,7 @@ export default function CalendarApp() {
           <WeekView
             events={visibleEvents}
             mobileWeekOffset={mobileWeekOffset}
+            onCreateEvent={canCreateEvents ? handleCreateEventAt : undefined}
             onOpenEvent={handleOpenEvent}
             onWeekNext={handleWeekNext}
             onWeekPrev={handleWeekPrev}
@@ -478,7 +501,8 @@ export default function CalendarApp() {
             allowAnnouncements={canManageUsers}
             editingEvent={editingEvent}
             error={composerError}
-            key={editingEvent?.id ?? "new"}
+            initialStart={composerStart}
+            key={editingEvent?.id ?? composerStart?.getTime() ?? "new"}
             mode={composerMode}
             onClose={handleCloseComposer}
             onSubmit={handleSubmitComposer}

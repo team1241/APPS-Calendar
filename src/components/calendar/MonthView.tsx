@@ -32,6 +32,7 @@ export function MonthView({
   onNextMonth,
   onToday,
   viewTransition,
+  onCreateEvent,
 }: {
   cursor: Date;
   events: CalendarEvent[];
@@ -43,6 +44,8 @@ export function MonthView({
   onNextMonth: () => void;
   onToday: () => void;
   viewTransition: ViewTransition;
+  /** Called with the clicked day; omit to make empty cell space inert. */
+  onCreateEvent?: (date: Date) => void;
 }) {
   const weeks = useMemo(
     () => getMonthMatrix(cursor.getFullYear(), cursor.getMonth()),
@@ -197,6 +200,14 @@ export function MonthView({
                   }
                   return (
                     <div className={classes.join(" ")} key={col}>
+                      {onCreateEvent && (
+                        <button
+                          aria-label={`New event on ${date.toLocaleDateString("en-US", { day: "numeric", month: "long", weekday: "long" })}`}
+                          className="day-cell-create"
+                          onClick={() => onCreateEvent(date)}
+                          type="button"
+                        />
+                      )}
                       <div className="day-num-row">
                         <button
                           className={[

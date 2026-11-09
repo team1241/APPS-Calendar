@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthedUser, requireAdmin } from "./users";
 import { listAllSubteams } from "./lib/calendarReads";
@@ -31,5 +31,21 @@ export const rename = mutation({
       updatedAt: Date.now(),
     });
     return null;
+  },
+});
+
+/** @brief Creates the "General" subteam that backs the General event category, if it is missing. */
+export const ensureGeneral = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db
+      .query("subteams")
+      .withIndex("by_subteamName", (q) => q.eq("subteamName", "General"))
+      .first();
+    if (existing) return existing._id;
+    return await ctx.db.insert("subteams", {
+      subteamName: "General",
+      updatedAt: Date.now(),
+    });
   },
 });
