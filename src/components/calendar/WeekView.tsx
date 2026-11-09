@@ -28,6 +28,16 @@ import {
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
 
+const EVENT_CHROME_PX = 36;
+const TITLE_LINE_PX = 19;
+
+/** @brief How many title lines fit above the time line in an event box of this duration. */
+const getTitleLines = (durationHours: number): number =>
+  Math.max(
+    1,
+    Math.floor((durationHours * HOUR_HEIGHT - EVENT_CHROME_PX) / TITLE_LINE_PX)
+  );
+
 export function WeekView({
   events,
   today,
@@ -48,7 +58,7 @@ export function WeekView({
   viewTransition: ViewTransition;
 }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 760;
-  const EVENT_LANE_H = 23;
+  const EVENT_LANE_H = 29;
 
   const timedEventsFor = useCallback(
     (date: Date) =>
@@ -189,36 +199,45 @@ export function WeekView({
                 colors,
                 isPast ? { glowAlpha: 0, glowSize: 0 } : undefined
               );
+              const timeRange = `${fmtTime(layout.event.start)} - ${fmtTime(layout.event.end)}`;
               return (
                 <button
-                  className={["week-event", isPast && "is-past-event"]
+                  className={[
+                    "week-event",
+                    layout.compact && "is-compact",
+                    isPast && "is-past-event",
+                  ]
                     .filter(Boolean)
                     .join(" ")}
                   key={layout.event.id}
                   onClick={() => onOpenEvent(layout.event.id)}
-                  style={{
-                    height: layout.height,
-                    left: layout.left,
-                    opacity: isPast ? 0.55 : 1,
-                    right: "auto",
-                    top: layout.top,
-                    width: layout.width,
-                    zIndex:
-                      1 +
-                      Math.min(
-                        3,
-                        Math.round((Number.parseFloat(layout.left) / 100) * 3)
-                      ),
-                    ...borderStyle,
-                  }}
+                  style={
+                    {
+                      "--event-duration": layout.durationHours,
+                      "--event-start": layout.startHours,
+                      "--title-lines": getTitleLines(layout.durationHours),
+                      left: `${layout.leftPercent}%`,
+                      opacity: isPast ? 0.55 : 1,
+                      width: `${layout.widthPercent}%`,
+                      zIndex: layout.zIndex,
+                      ...borderStyle,
+                    } as React.CSSProperties
+                  }
+                  title={`${layout.event.title}\n${timeRange}`}
                   type="button"
                 >
                   <div className="week-event-inner">
-                    <div className="t">{layout.event.title}</div>
-                    <div className="tm">
-                      {fmtTime(layout.event.start)} -{" "}
-                      {fmtTime(layout.event.end)}
+                    <div className="t">
+                      {layout.compact
+                        ? `${layout.event.title}, `
+                        : layout.event.title}
+                      {layout.compact && (
+                        <span className="tm-inline">
+                          {fmtTime(layout.event.start)}
+                        </span>
+                      )}
                     </div>
+                    {!layout.compact && <div className="tm">{timeRange}</div>}
                   </div>
                 </button>
               );
@@ -327,18 +346,10 @@ export function WeekView({
 
   return (
     <div
-      aria-label="Week calendar. Swipe left or right to change week."
+      aria-label={`Week calendar, ${rangeLabel}. Swipe left or right to change week.`}
       className={weekClassName}
       data-swipe-surface="week"
     >
-      <div className="week-header">
-        <h1>{mobileWeekOffset === 0 ? "This week" : rangeLabel}</h1>
-        <p>
-          {mobileWeekOffset === 0
-            ? "Yesterday, then today and the three days ahead."
-            : "Swipe horizontally to move through weeks."}
-        </p>
-      </div>
       {segments.laneCount > 0 && (
         <div
           className="week-multi-row"

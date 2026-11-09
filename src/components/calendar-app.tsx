@@ -39,7 +39,7 @@ export default function CalendarApp() {
     "calendar"
   );
   const [adminDirty, setAdminDirty] = useState(false);
-  const [view, setView] = useState<"month" | "week" | "announcements">("month");
+  const [view, setView] = useState<"month" | "week" | "announcements">("week");
   const [carouselMode, setCarouselMode] = useState(false);
   const [cursor, setCursor] = useState(
     () => new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -57,6 +57,7 @@ export default function CalendarApp() {
     "event"
   );
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [swipeEnter, setSwipeEnter] = useState<
     null | "from-left" | "from-right"
   >(null);
@@ -85,7 +86,9 @@ export default function CalendarApp() {
 
   const currentUserRole: UserRole =
     currentUser?.role ?? (currentUser?.isAdmin ? "admin" : "member");
-  const canManageUsers = currentUserRole !== "member";
+  const canManageUsers =
+    currentUserRole === "admin" || currentUserRole === "mentor";
+  const canCreateEvents = currentUserRole !== "member";
 
   const selectedEvent = useMemo(() => {
     if (!selectedEventId) {
@@ -103,7 +106,7 @@ export default function CalendarApp() {
 
   const handleSetView = useCallback(
     (v: "month" | "week" | "announcements") => {
-      const viewOrder = { announcements: 2, month: 0, week: 1 } as const;
+      const viewOrder = { announcements: 2, month: 1, week: 0 } as const;
       if (v !== view) {
         setViewTransition(
           viewOrder[v] > viewOrder[view] ? "from-right" : "from-left"
@@ -149,21 +152,38 @@ export default function CalendarApp() {
     setDayListScrollTop(0);
   }, []);
   const handleOpenComposer = useCallback(() => {
-    if (!canManageUsers) {
+    if (!canCreateEvents) {
       return;
     }
+    setEditingEvent(null);
     setComposerMode("event");
     setComposerError(null);
     setComposerOpen(true);
-  }, [canManageUsers]);
+  }, [canCreateEvents]);
+  const handleEditEvent = useCallback((event: CalendarEvent) => {
+    setSelectedEventId(null);
+    setEventModalOrigin(null);
+    setDayListDate(null);
+    setEditingEvent(event);
+    setComposerMode("event");
+    setComposerError(null);
+    setComposerOpen(true);
+  }, []);
   const handleCloseComposer = useCallback(() => {
     setComposerOpen(false);
     setComposerError(null);
+    setEditingEvent(null);
   }, []);
-  const handleComposerTab = useCallback((m: "event" | "announcement") => {
-    setComposerMode(m);
-    setComposerError(null);
-  }, []);
+  const handleComposerTab = useCallback(
+    (m: "event" | "announcement") => {
+      if (m === "announcement" && !canManageUsers) {
+        return;
+      }
+      setComposerMode(m);
+      setComposerError(null);
+    },
+    [canManageUsers]
+  );
 
   const handleRequestDelete = useCallback(
     (event: CalendarEvent | CalendarAnnouncement) => {
@@ -217,6 +237,7 @@ export default function CalendarApp() {
 
   const handleSubmitComposer = useComposerSubmit({
     defaultEventTypeId,
+    editingEventId: (editingEvent?.id as Id<"events"> | undefined) ?? null,
     keyToSubteamId,
     mode: composerMode,
     setComposerError,
@@ -345,7 +366,12 @@ export default function CalendarApp() {
   const userName = currentUser
     ? `${currentUser.firstName} ${currentUser.lastName}`.trim() || "User"
     : user?.fullName || "User";
-  const isAdmin = canManageUsers;
+  const canDeleteSelected =
+    canManageUsers ||
+    (canCreateEvents &&
+      selectedEvent !== null &&
+      "authorId" in selectedEvent &&
+      selectedEvent.authorId === currentUser?._id);
   const adminPanelOpen = appSection === "admin" && canManageUsers;
 
   return (
@@ -361,12 +387,12 @@ export default function CalendarApp() {
         {!carouselMode && (
           <TopBar
             adminPanelOpen={adminPanelOpen}
+            canCreateEvents={canCreateEvents}
             canManageUsers={canManageUsers}
             currentUserRole={currentUserRole}
             events={events}
             filtersJustOpened={filtersJustOpened}
             filtersOpen={filtersOpen}
-            isAdmin={isAdmin}
             onBackToCalendar={handleBackToCalendar}
             onOpenAdminPanel={handleOpenAdminPanel}
             onOpenComposer={handleOpenComposer}
@@ -374,7 +400,7 @@ export default function CalendarApp() {
             onSignOut={handleSignOut}
             onToggleCarousel={() => {
               setCarouselMode(true);
-              setView("month");
+              setView("week");
             }}
             onToggleFilters={handleToggleFilters}
             onToggleSubteam={handleToggleSubteamFilter}
@@ -439,16 +465,20 @@ export default function CalendarApp() {
         {!adminPanelOpen && selectedEvent && (
           <EventModal
             cameFromDayList={eventModalOrigin === "daylist"}
+            canDelete={canDeleteSelected}
             event={selectedEvent}
-            isAdmin={isAdmin}
             onBackToDayList={handleBackToDayList}
             onClose={handleCloseModal}
+            onEdit={canDeleteSelected ? handleEditEvent : undefined}
             onRequestDelete={handleRequestDelete}
           />
         )}
         {!adminPanelOpen && composerOpen && (
           <ComposerModal
+            allowAnnouncements={canManageUsers}
+            editingEvent={editingEvent}
             error={composerError}
+            key={editingEvent?.id ?? "new"}
             mode={composerMode}
             onClose={handleCloseComposer}
             onSubmit={handleSubmitComposer}

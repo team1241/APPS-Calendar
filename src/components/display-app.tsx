@@ -25,8 +25,8 @@ const WEEK_DAYS_BEFORE = 14;
 const WEEK_DAYS_AFTER = 21;
 const VIEW_ORDER: Record<DisplayView, number> = {
   announcements: 2,
-  month: 0,
-  week: 1,
+  month: 1,
+  week: 0,
 };
 const VIEW_TRANSITION_MS = 460;
 const DATE_CHECK_INTERVAL_MS = 60_000;
@@ -48,7 +48,7 @@ export default function DisplayApp() {
     () => new Date(today.getFullYear(), today.getMonth(), 1),
     [today]
   );
-  const [view, setView] = useState<DisplayView>("month");
+  const [view, setView] = useState<DisplayView>("week");
   const [viewTransition, setViewTransition] = useState<ViewTransition>(null);
 
   const token = useMemo(() => readFragmentParam("token"), []);

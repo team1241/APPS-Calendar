@@ -1,6 +1,13 @@
 import type { Doc } from "../_generated/dataModel";
 
-export type UserRole = "admin" | "member" | "mentor";
+export type UserRole = "admin" | "member" | "mentor" | "student";
+
+/** @brief Whether the role can open the admin panel and manage announcements. */
+export const isAdminRole = (role: UserRole): boolean =>
+  role === "admin" || role === "mentor";
+
+/** @brief Whether the role can create calendar events. */
+export const canCreateEvents = (role: UserRole): boolean => role !== "member";
 
 type UserAccessFields = Pick<Doc<"users">, "role">;
 

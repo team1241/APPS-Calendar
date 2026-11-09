@@ -31,12 +31,12 @@ const THEME_OPTIONS = [
 
 export function TopBar({
   adminPanelOpen,
+  canCreateEvents,
   canManageUsers,
   currentUserRole,
   events,
   filtersOpen,
   filtersJustOpened,
-  isAdmin,
   onBackToCalendar,
   onOpenAdminPanel,
   onOpenComposer,
@@ -49,12 +49,12 @@ export function TopBar({
   userName,
 }: {
   adminPanelOpen: boolean;
+  canCreateEvents: boolean;
   canManageUsers: boolean;
   currentUserRole: UserRole;
   events: CalendarEvent[];
   filtersOpen: boolean;
   filtersJustOpened: boolean;
-  isAdmin: boolean;
   onBackToCalendar: () => void;
   onOpenAdminPanel: () => void;
   onOpenComposer: () => void;
@@ -189,11 +189,15 @@ export function TopBar({
                 />
               )}
             </div>
-            {isAdmin ? (
+            {canCreateEvents ? (
               <button
                 className="icon-btn"
                 onClick={onOpenComposer}
-                title="Create event or announcement"
+                title={
+                  canManageUsers
+                    ? "Create event or announcement"
+                    : "Create event"
+                }
                 type="button"
               >
                 <HugeiconsIcon icon={PlusSignIcon} size={18} strokeWidth={2} />

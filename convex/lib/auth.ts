@@ -1,6 +1,6 @@
 import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "../_generated/server";
-import { getUserRole } from "./userAccess";
+import { canCreateEvents, getUserRole, isAdminRole } from "./userAccess";
 
 export async function getAuthedUser(
   ctx: QueryCtx | MutationCtx,
@@ -32,8 +32,28 @@ export async function requireAdmin(
   ctx: QueryCtx | MutationCtx,
 ): Promise<Doc<"users">> {
   const user = await requireAuthedUser(ctx);
-  if (getUserRole(user) === "member") {
+  if (!isAdminRole(getUserRole(user))) {
     throw new Error("Admin access required");
+  }
+  return user;
+}
+
+export async function requireMentor(
+  ctx: QueryCtx | MutationCtx,
+): Promise<Doc<"users">> {
+  const user = await requireAuthedUser(ctx);
+  if (getUserRole(user) !== "mentor") {
+    throw new Error("Mentor access required");
+  }
+  return user;
+}
+
+export async function requireEventCreator(
+  ctx: QueryCtx | MutationCtx,
+): Promise<Doc<"users">> {
+  const user = await requireAuthedUser(ctx);
+  if (!canCreateEvents(getUserRole(user))) {
+    throw new Error("You do not have permission to create events");
   }
   return user;
 }

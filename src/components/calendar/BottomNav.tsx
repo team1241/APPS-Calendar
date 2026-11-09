@@ -36,8 +36,8 @@ export function BottomNav({
   }, [view]);
 
   const items: ["month" | "week" | "announcements", string][] = [
-    ["month", "Month"],
     ["week", "Week"],
+    ["month", "Month"],
     ["announcements", "Announcements"],
   ];
 

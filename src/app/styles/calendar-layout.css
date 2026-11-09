@@ -1,0 +1,320 @@
+/* ---------- page widths ---------- */
+:root {
+  --page-max-width: 1760px;
+  --page-gutter: clamp(16px, 3vw, 56px);
+}
+
+.topbar {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--page-max-width);
+  padding-right: var(--page-gutter);
+  padding-left: var(--page-gutter);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.month-wrap,
+.week-wrap,
+.ann-wrap {
+  box-sizing: border-box;
+  max-width: var(--page-max-width);
+  padding-right: var(--page-gutter);
+  padding-left: var(--page-gutter);
+}
+
+.admin-panel-wrap {
+  width: min(var(--page-max-width), 100%);
+  padding-right: var(--page-gutter);
+  padding-left: var(--page-gutter);
+}
+
+/* Square cells get too tall once the month spans the page; size rows to the viewport instead. */
+@media (min-width: 961px) {
+  #app:not(.carousel-mode) .day-cell {
+    height: clamp(112px, calc((100dvh - 250px) / 6), 210px);
+    aspect-ratio: auto;
+  }
+}
+
+@media (min-width: 1100px) {
+  .ann-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+/* ---------- viewer text sizes (about 3px up from the base sheets) ---------- */
+.micro-label {
+  font-size: 13.5px;
+}
+
+.subteam-tag,
+.event-pill,
+.pill-inner,
+.more-btn,
+.ann-card .date,
+.event-modal .cat-chip span.lbl,
+.day-list-item .tm {
+  font-size: 14px;
+}
+
+.next-event-pill .countdown,
+.next-event-pill .title,
+.today-btn,
+.ann-card .time,
+.day-list-modal .head .sub {
+  font-size: 15px;
+}
+
+.month-label {
+  font-size: 13px;
+}
+
+.bottom-nav button {
+  font-size: 15px;
+}
+
+.event-modal .info-row span,
+.day-list-item .t {
+  font-size: 16px;
+}
+
+.hour-label {
+  font-size: 16px;
+}
+
+.week-multi-label {
+  font-size: 12px;
+}
+
+.week-event .t {
+  font-size: 15px;
+}
+
+.week-event .tm,
+.week-event .tm-inline {
+  font-size: 13px;
+}
+
+.day-col-head .num {
+  font-size: 20px;
+}
+
+.day-col.today-col .day-col-head .num {
+  font-size: 26px;
+}
+
+.month-header h1 {
+  font-size: 34px;
+}
+
+.ann-header h1 {
+  font-size: 30px;
+}
+
+.ann-card .title {
+  font-size: 19px;
+}
+
+.event-modal h2 {
+  font-size: 26px;
+}
+
+.event-modal .desc {
+  font-size: 17px;
+}
+
+.day-list-modal .head .t {
+  font-size: 21px;
+}
+
+/* Taller pills and a wider hour gutter to fit the larger text; lane sizes in MonthView/WeekView match. */
+.event-pill,
+.more-btn {
+  height: 26px;
+}
+
+.event-pill,
+.pill-inner {
+  line-height: 18px;
+}
+
+.more-btn {
+  line-height: 26px;
+}
+
+.week-row,
+.week-multi-row {
+  grid-template-columns:
+    62px minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)
+    minmax(0, 1fr);
+}
+
+.time-gutter {
+  flex-basis: 62px;
+  width: 62px;
+}
+
+@media (min-width: 961px) {
+  .day-events {
+    grid-auto-rows: 26px;
+  }
+
+  .day-num {
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 960px) {
+  .month-header h1 {
+    font-size: 28px;
+  }
+
+  .month-wrap .event-pill,
+  .month-wrap .pill-inner,
+  .month-wrap .more-btn {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .month-header h1 {
+    font-size: 23px;
+  }
+
+  .weekday-cell .micro-label {
+    font-size: 10px;
+  }
+
+  .day-num {
+    font-size: 12px;
+  }
+
+  .bottom-nav button {
+    font-size: 14px;
+  }
+
+  .ann-card .time {
+    font-size: 12px;
+  }
+
+  .ann-card .title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 380px) {
+  .bottom-nav button {
+    font-size: 13px;
+  }
+}
+
+/* ---------- calendar text contrast ---------- */
+.month-wrap,
+.week-wrap,
+.mobile-week-wrap,
+.ann-wrap {
+  --text-secondary: rgb(var(--ink-rgb) / 0.72);
+  --text-tertiary: rgb(var(--ink-rgb) / 0.56);
+}
+
+.hour-label {
+  color: rgb(var(--ink-rgb) / 0.7);
+}
+
+.day-col-head .micro-label,
+.weekday-cell .micro-label {
+  color: rgb(var(--ink-rgb) / 0.82);
+}
+
+.day-col.today-col .day-col-head .micro-label {
+  color: var(--text-primary);
+}
+
+/* ---------- week view events ---------- */
+.week-event {
+  top: calc(var(--week-hour-height, 52px) * var(--event-start));
+  right: auto;
+  height: calc(var(--week-hour-height, 52px) * var(--event-duration));
+  min-height: 26px;
+  /* Separates cascaded events where they overlap. */
+  box-shadow: 0 0 0 1px var(--bg);
+}
+
+.week-event .t {
+  flex: 0 1 auto;
+  min-height: 0;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+}
+
+.week-event .tm {
+  margin-top: 2px;
+}
+
+.week-event.is-compact .week-event-inner {
+  justify-content: center;
+  padding: 1px 7px;
+}
+
+.week-event.is-compact .t {
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-event .tm-inline {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Shows the full event on top when its box is too small for the text. */
+.week-event:hover,
+.week-event:focus-visible {
+  left: 0 !important;
+  z-index: 30 !important;
+  width: 100% !important;
+  height: auto;
+  min-height: max(
+    26px,
+    calc(var(--week-hour-height, 52px) * var(--event-duration))
+  );
+}
+
+.week-event:hover .t,
+.week-event:focus-visible .t {
+  display: block;
+  white-space: normal;
+}
+
+/* ---------- event modal actions ---------- */
+.event-modal-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.event-edit-btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgb(var(--overlay-rgb) / 0.06);
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  transition: background 150ms ease-out;
+}
+
+.event-edit-btn:hover {
+  background: rgb(var(--overlay-rgb) / 0.1);
+}

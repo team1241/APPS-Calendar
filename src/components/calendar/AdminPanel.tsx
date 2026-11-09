@@ -24,6 +24,7 @@ import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { AdminSelect, type AdminSelectOption } from "./AdminSelect";
 import { AdminSubteamEditor } from "./AdminSubteamEditor";
+import { AdminUserInvites } from "./AdminUserInvites";
 
 const INITIAL_USER_COUNT = 100;
 const LOAD_MORE_USER_COUNT = 100;
@@ -41,6 +42,7 @@ const ROLE_FILTER_OPTIONS: readonly AdminSelectOption[] = [
   { label: "All roles", value: "all" },
   { label: "Mentors", value: "mentor" },
   { label: "Admins", value: "admin" },
+  { label: "Students", value: "student" },
   { label: "Members", value: "member" },
 ];
 
@@ -154,6 +156,7 @@ export function AdminPanel({
         value: "mentor",
       },
       { label: "Admin", value: "admin" },
+      { label: "Student", value: "student" },
       { label: "Member", value: "member" },
     ],
     [currentUserRole]
@@ -454,6 +457,8 @@ export function AdminPanel({
           <p>Manage grades, permissions, and subteam subscriptions.</p>
         </div>
       </header>
+
+      {currentUserRole === "mentor" && <AdminUserInvites />}
 
       <section className="admin-users-surface">
         <div className="admin-users-heading">

@@ -6,13 +6,13 @@ type CarouselView = "month" | "week" | "announcements";
 
 const ROTATION_INTERVAL_MS = 15_000;
 const NEXT_VIEW: Record<CarouselView, CarouselView> = {
-  announcements: "month",
-  month: "week",
-  week: "announcements",
+  announcements: "week",
+  month: "announcements",
+  week: "month",
 };
 
 /**
- * @brief Cycles month → week → announcements on a fixed interval while enabled.
+ * @brief Cycles week → month → announcements on a fixed interval while enabled.
  * @param enabled Whether the rotation timer runs.
  * @param view The view currently shown.
  * @param onSetView Called with the next view on each tick.
