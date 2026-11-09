@@ -1,6 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { getAuthedUser, requireAdmin } from "./users";
+import { getAuthedUser } from "./users";
 import { requireEventCreator } from "./lib/auth";
 import { getUserRole, isAdminRole } from "./lib/userAccess";
 import { listEventsInRange } from "./lib/calendarReads";
@@ -57,10 +57,13 @@ export const update = mutation({
     info: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAdmin(ctx);
+    const user = await requireEventCreator(ctx);
     const { eventId, ...patch } = args;
     const event = await ctx.db.get("events", eventId);
     if (!event) throw new Error("Event not found");
+    if (!isAdminRole(getUserRole(user)) && event.author !== user._id) {
+      throw new Error("You can only edit events you created");
+    }
     await ctx.db.patch("events", eventId, { ...patch, updatedAt: Date.now() });
     return null;
   },

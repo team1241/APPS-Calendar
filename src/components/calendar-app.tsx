@@ -57,6 +57,7 @@ export default function CalendarApp() {
     "event"
   );
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [swipeEnter, setSwipeEnter] = useState<
     null | "from-left" | "from-right"
   >(null);
@@ -154,13 +155,24 @@ export default function CalendarApp() {
     if (!canCreateEvents) {
       return;
     }
+    setEditingEvent(null);
     setComposerMode("event");
     setComposerError(null);
     setComposerOpen(true);
   }, [canCreateEvents]);
+  const handleEditEvent = useCallback((event: CalendarEvent) => {
+    setSelectedEventId(null);
+    setEventModalOrigin(null);
+    setDayListDate(null);
+    setEditingEvent(event);
+    setComposerMode("event");
+    setComposerError(null);
+    setComposerOpen(true);
+  }, []);
   const handleCloseComposer = useCallback(() => {
     setComposerOpen(false);
     setComposerError(null);
+    setEditingEvent(null);
   }, []);
   const handleComposerTab = useCallback(
     (m: "event" | "announcement") => {
@@ -225,6 +237,7 @@ export default function CalendarApp() {
 
   const handleSubmitComposer = useComposerSubmit({
     defaultEventTypeId,
+    editingEventId: (editingEvent?.id as Id<"events"> | undefined) ?? null,
     keyToSubteamId,
     mode: composerMode,
     setComposerError,
@@ -456,13 +469,16 @@ export default function CalendarApp() {
             event={selectedEvent}
             onBackToDayList={handleBackToDayList}
             onClose={handleCloseModal}
+            onEdit={canDeleteSelected ? handleEditEvent : undefined}
             onRequestDelete={handleRequestDelete}
           />
         )}
         {!adminPanelOpen && composerOpen && (
           <ComposerModal
             allowAnnouncements={canManageUsers}
+            editingEvent={editingEvent}
             error={composerError}
+            key={editingEvent?.id ?? "new"}
             mode={composerMode}
             onClose={handleCloseComposer}
             onSubmit={handleSubmitComposer}

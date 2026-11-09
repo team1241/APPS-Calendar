@@ -4,6 +4,7 @@ import {
   ChevronLeftIcon,
   Clock01Icon,
   Delete02Icon,
+  Edit02Icon,
   Location01Icon,
   User02Icon,
 } from "@hugeicons/core-free-icons";
@@ -22,6 +23,7 @@ export function EventModal({
   event,
   cameFromDayList,
   canDelete,
+  onEdit,
   onRequestDelete,
   onClose,
   onBackToDayList,
@@ -29,6 +31,8 @@ export function EventModal({
   event: CalendarEvent | CalendarAnnouncement | null;
   cameFromDayList: boolean;
   canDelete: boolean;
+  /** Shown as an Edit button when provided. */
+  onEdit?: (event: CalendarEvent) => void;
   onRequestDelete: (event: CalendarEvent | CalendarAnnouncement) => void;
   onClose: () => void;
   onBackToDayList: () => void;
@@ -78,7 +82,7 @@ export function EventModal({
   } else if (calEvent.allDay) {
     timeStr = `${calEvent.start.toLocaleDateString("en-US", { day: "numeric", month: "short" })} - ${calEvent.end.toLocaleDateString("en-US", { day: "numeric", month: "short" })}`;
   } else {
-    timeStr = `${calEvent.start.toLocaleDateString("en-US", { day: "numeric", month: "short", weekday: "short" })} ? ${fmtTime(calEvent.start)} - ${fmtTime(calEvent.end)}`;
+    timeStr = `${calEvent.start.toLocaleDateString("en-US", { day: "numeric", month: "short", weekday: "short" })} · ${fmtTime(calEvent.start)} - ${fmtTime(calEvent.end)}`;
   }
 
   return (
@@ -155,17 +159,33 @@ export function EventModal({
               ? (event as CalendarAnnouncement).snippet
               : calEvent.info || ""}
           </p>
-          {canDelete && (
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button
-                aria-label="Delete event"
-                className="close-btn"
-                onClick={() => onRequestDelete(event)}
-                title="Delete"
-                type="button"
-              >
-                <HugeiconsIcon icon={Delete02Icon} size={16} strokeWidth={2} />
-              </button>
+          {(canDelete || (onEdit && !isAnnouncement)) && (
+            <div className="event-modal-actions">
+              {onEdit && !isAnnouncement && (
+                <button
+                  className="event-edit-btn"
+                  onClick={() => onEdit(calEvent)}
+                  type="button"
+                >
+                  <HugeiconsIcon icon={Edit02Icon} size={15} strokeWidth={2} />
+                  Edit
+                </button>
+              )}
+              {canDelete && (
+                <button
+                  aria-label="Delete event"
+                  className="close-btn"
+                  onClick={() => onRequestDelete(event)}
+                  title="Delete"
+                  type="button"
+                >
+                  <HugeiconsIcon
+                    icon={Delete02Icon}
+                    size={16}
+                    strokeWidth={2}
+                  />
+                </button>
+              )}
             </div>
           )}
         </div>

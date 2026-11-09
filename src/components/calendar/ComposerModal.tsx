@@ -4,14 +4,19 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useLayoutEffect, useRef } from "react";
 import {
   CATEGORIES,
+  type CalendarEvent,
   type CategoryKey,
   positionPillIndicator,
   toDateInputValue,
 } from "@/lib/calendar/calendar";
 import { SubteamPill } from "./SubteamPill";
 
+const toTimeInputValue = (date: Date): string =>
+  `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
 export function ComposerModal({
   allowAnnouncements,
+  editingEvent,
   mode,
   error,
   onClose,
@@ -19,6 +24,8 @@ export function ComposerModal({
   onSubmit,
 }: {
   allowAnnouncements: boolean;
+  /** Prefills the form and saves changes to this event instead of creating one. */
+  editingEvent?: CalendarEvent | null;
   mode: "event" | "announcement";
   error: string | null;
   onClose: () => void;
@@ -26,6 +33,31 @@ export function ComposerModal({
   onSubmit: () => void;
 }) {
   const todayStr = toDateInputValue(new Date());
+  const isEditing = Boolean(editingEvent);
+  const editingSubteams = new Set(editingEvent?.subteams ?? []);
+  const isAllDay = editingEvent?.allDay ?? false;
+  const startDateValue = editingEvent
+    ? toDateInputValue(editingEvent.start)
+    : todayStr;
+  const endDateValue = editingEvent
+    ? toDateInputValue(editingEvent.end)
+    : todayStr;
+  const startTimeValue =
+    editingEvent && !isAllDay ? toTimeInputValue(editingEvent.start) : "09:00";
+  const endTimeValue =
+    editingEvent && !isAllDay ? toTimeInputValue(editingEvent.end) : "10:00";
+  let heading = "New announcement";
+  if (isEditing) {
+    heading = "Edit event";
+  } else if (mode === "event") {
+    heading = "New event";
+  }
+  let submitLabel = "Post announcement";
+  if (isEditing) {
+    submitLabel = "Save changes";
+  } else if (mode === "event") {
+    submitLabel = "Create event";
+  }
   const tabsRef = useRef<HTMLDivElement>(null);
   const tabIndicatorRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +110,7 @@ export function ComposerModal({
         >
           <div className="head">
             <div className="head-left">
-              {allowAnnouncements && (
+              {allowAnnouncements && !isEditing && (
                 <div className="composer-tabs" ref={tabsRef}>
                   <div className="tab-indicator" ref={tabIndicatorRef} />
                   <button
@@ -115,13 +147,14 @@ export function ComposerModal({
               <HugeiconsIcon icon={Cancel01Icon} size={17} strokeWidth={2} />
             </button>
           </div>
-          <h2>{mode === "event" ? "New event" : "New announcement"}</h2>
+          <h2>{heading}</h2>
           {error && <div className="composer-error">{error}</div>}
           <div className="composer-form">
             <label className="form-field">
               <span className="form-label">Title</span>
               <input
                 className="form-input"
+                defaultValue={editingEvent?.title}
                 id="cf-title"
                 placeholder={
                   mode === "event"
@@ -138,7 +171,7 @@ export function ComposerModal({
                     <span className="form-label">Start date</span>
                     <input
                       className="form-input"
-                      defaultValue={todayStr}
+                      defaultValue={startDateValue}
                       id="cf-start-date"
                       type="date"
                     />
@@ -147,15 +180,17 @@ export function ComposerModal({
                     <span className="form-label">End date</span>
                     <input
                       className="form-input"
-                      defaultValue={todayStr}
+                      defaultValue={endDateValue}
                       id="cf-end-date"
                       type="date"
                     />
                   </label>
                 </div>
                 <button
-                  aria-pressed="false"
-                  className="allday-toggle"
+                  aria-pressed={isAllDay}
+                  className={
+                    isAllDay ? "allday-toggle selected" : "allday-toggle"
+                  }
                   id="cf-allday"
                   onClick={(e) => {
                     const btn = e.currentTarget;
@@ -175,7 +210,7 @@ export function ComposerModal({
                     <span className="form-label">Start time</span>
                     <input
                       className="form-input"
-                      defaultValue="09:00"
+                      defaultValue={startTimeValue}
                       id="cf-start-time"
                       type="time"
                     />
@@ -184,7 +219,7 @@ export function ComposerModal({
                     <span className="form-label">End time</span>
                     <input
                       className="form-input"
-                      defaultValue="10:00"
+                      defaultValue={endTimeValue}
                       id="cf-end-time"
                       type="time"
                     />
@@ -205,6 +240,7 @@ export function ComposerModal({
                         categoryKey={key}
                         includeDataSubteam
                         key={key}
+                        selected={editingSubteams.has(key)}
                         toggleOnClick
                       />
                     ))}
@@ -214,6 +250,7 @@ export function ComposerModal({
                   <span className="form-label">Location</span>
                   <input
                     className="form-input"
+                    defaultValue={editingEvent?.location}
                     id="cf-location"
                     placeholder="e.g. Shop Bay 1"
                     type="text"
@@ -223,6 +260,7 @@ export function ComposerModal({
                   <span className="form-label">Organizer</span>
                   <input
                     className="form-input"
+                    defaultValue={editingEvent?.organizer}
                     id="cf-organizer"
                     placeholder="e.g. Alex Chen"
                     type="text"
@@ -232,6 +270,7 @@ export function ComposerModal({
                   <span className="form-label">Details</span>
                   <textarea
                     className="form-input form-textarea"
+                    defaultValue={editingEvent?.info}
                     id="cf-info"
                     placeholder="What's this event about?"
                     rows={3}
@@ -261,7 +300,7 @@ export function ComposerModal({
               Cancel
             </button>
             <button className="primary-btn" onClick={onSubmit} type="button">
-              {mode === "event" ? "Create event" : "Post announcement"}
+              {submitLabel}
             </button>
           </div>
         </div>

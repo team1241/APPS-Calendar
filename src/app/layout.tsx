@@ -6,6 +6,7 @@ import "./styles/carousel-mode.css";
 import "./styles/topbar-profile.css";
 import "./styles/admin-shell.css";
 import "./styles/admin-controls.css";
+import "./styles/calendar-layout.css";
 import "./styles/admin-responsive.css";
 import "./styles/theme.css";
 import { RootProviders } from "@/components/providers/root-providers";

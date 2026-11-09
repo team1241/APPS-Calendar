@@ -8,6 +8,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 
 export function useComposerSubmit({
   defaultEventTypeId,
+  editingEventId,
   keyToSubteamId,
   mode,
   setComposerError,
@@ -15,6 +16,7 @@ export function useComposerSubmit({
   setCursor,
 }: {
   defaultEventTypeId: Id<"eventTypes"> | null;
+  editingEventId: Id<"events"> | null;
   keyToSubteamId: Map<CategoryKey, Id<"subteams">>;
   mode: "event" | "announcement";
   setComposerError: (value: string | null) => void;
@@ -22,6 +24,7 @@ export function useComposerSubmit({
   setCursor: (value: Date) => void;
 }) {
   const createEventMutation = useMutation(api.events.create);
+  const updateEventMutation = useMutation(api.events.update);
   const createAnnouncementMutation = useMutation(api.announcements.create);
 
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: preserves the existing DOM-driven submit sequence exactly.
@@ -97,6 +100,28 @@ export function useComposerSubmit({
       const subteamIds = selectedPills
         .map((key) => keyToSubteamId.get(key))
         .filter(Boolean) as Id<"subteams">[];
+      if (editingEventId) {
+        try {
+          await updateEventMutation({
+            allDay,
+            endTime: end.getTime(),
+            eventId: editingEventId,
+            info,
+            location,
+            organizer,
+            startTime: start.getTime(),
+            subteams: subteamIds,
+            title,
+          });
+          setComposerOpen(false);
+          setComposerError(null);
+        } catch (error) {
+          setComposerError(
+            error instanceof Error ? error.message : "Failed to save event"
+          );
+        }
+        return;
+      }
       if (!defaultEventTypeId) {
         setComposerError("Event types not loaded yet. Please try again.");
         return;
@@ -143,7 +168,9 @@ export function useComposerSubmit({
   }, [
     createAnnouncementMutation,
     createEventMutation,
+    updateEventMutation,
     defaultEventTypeId,
+    editingEventId,
     keyToSubteamId,
     mode,
     setComposerError,

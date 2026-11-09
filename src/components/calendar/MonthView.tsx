@@ -56,11 +56,13 @@ export function MonthView({
     cursor.getFullYear() === today.getFullYear() &&
     cursor.getMonth() === today.getMonth();
   const MAX_VISIBLE = isCompactMonth ? 2 : 3;
-  const BANNER_TOP = isCompactMonth ? 27 : 36;
-  let BANNER_LANE_H = 23;
+  let BANNER_TOP = 40;
+  let BANNER_LANE_H = 29;
   if (isCompactMonth) {
+    BANNER_TOP = 27;
     BANNER_LANE_H = 7;
   } else if (isTabletMonth) {
+    BANNER_TOP = 36;
     BANNER_LANE_H = 20;
   }
   const weekdayLabels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
