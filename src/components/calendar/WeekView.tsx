@@ -47,6 +47,7 @@ export function WeekView({
   onWeekPrev,
   onWeekNext,
   viewTransition,
+  onCreateEvent,
 }: {
   events: CalendarEvent[];
   today: Date;
@@ -56,6 +57,8 @@ export function WeekView({
   onWeekPrev: () => void;
   onWeekNext: () => void;
   viewTransition: ViewTransition;
+  /** Called with the clicked hour's start; omit to make empty slots inert. */
+  onCreateEvent?: (start: Date) => void;
 }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 760;
   const EVENT_LANE_H = 29;
@@ -188,9 +191,29 @@ export function WeekView({
               position: "relative",
             }}
           >
-            {Array.from({ length: DAY_END - DAY_START + 1 }, (_, i) => (
-              <div className="hour-row" key={i} />
-            ))}
+            {Array.from({ length: DAY_END - DAY_START + 1 }, (_, i) => {
+              const hour = DAY_START + i;
+              const isLastLine = hour === DAY_END;
+              if (!onCreateEvent || isLastLine) {
+                return <div className="hour-row" key={hour} />;
+              }
+              const slotLabel = `New event, ${fmtWeekday(date)} ${date.getDate()} at ${fmtHourLabel(hour)}`;
+              return (
+                <button
+                  aria-label={slotLabel}
+                  className="hour-row hour-slot"
+                  data-hour={`+ ${fmtHourLabel(hour)}`}
+                  key={hour}
+                  onClick={() => {
+                    const start = new Date(date);
+                    start.setHours(hour, 0, 0, 0);
+                    onCreateEvent(start);
+                  }}
+                  title={slotLabel}
+                  type="button"
+                />
+              );
+            })}
             {layouts.map((layout) => {
               const colors = getEventColors(layout.event);
               const isPast =
@@ -246,7 +269,7 @@ export function WeekView({
         </div>
       );
     },
-    [onOpenEvent]
+    [onCreateEvent, onOpenEvent]
   );
 
   if (isMobile) {

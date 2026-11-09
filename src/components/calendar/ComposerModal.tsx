@@ -10,12 +10,15 @@ import {
 } from "@/lib/calendar/calendar";
 import { SubteamPill } from "./SubteamPill";
 
+const ONE_HOUR_MS = 3_600_000;
+
 const toTimeInputValue = (date: Date): string =>
   `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 
 export function ComposerModal({
   allowAnnouncements,
   editingEvent,
+  initialStart,
   mode,
   error,
   onClose,
@@ -25,6 +28,8 @@ export function ComposerModal({
   allowAnnouncements: boolean;
   /** Prefills the form and saves changes to this event instead of creating one. */
   editingEvent?: CalendarEvent | null;
+  /** Prefills a new event's start (and a one-hour end) from the slot the user clicked. */
+  initialStart?: Date | null;
   mode: "event" | "announcement";
   error: string | null;
   onClose: () => void;
@@ -35,16 +40,26 @@ export function ComposerModal({
   const isEditing = Boolean(editingEvent);
   const editingSubteams = new Set(editingEvent?.subteams ?? []);
   const isAllDay = editingEvent?.allDay ?? false;
-  const startDateValue = editingEvent
-    ? toDateInputValue(editingEvent.start)
-    : todayStr;
-  const endDateValue = editingEvent
-    ? toDateInputValue(editingEvent.end)
-    : todayStr;
-  const startTimeValue =
-    editingEvent && !isAllDay ? toTimeInputValue(editingEvent.start) : "09:00";
-  const endTimeValue =
-    editingEvent && !isAllDay ? toTimeInputValue(editingEvent.end) : "10:00";
+  const slotEnd = initialStart
+    ? new Date(initialStart.getTime() + ONE_HOUR_MS)
+    : null;
+  let startDateValue = todayStr;
+  let endDateValue = todayStr;
+  let startTimeValue = "09:00";
+  let endTimeValue = "10:00";
+  if (editingEvent) {
+    startDateValue = toDateInputValue(editingEvent.start);
+    endDateValue = toDateInputValue(editingEvent.end);
+    if (!isAllDay) {
+      startTimeValue = toTimeInputValue(editingEvent.start);
+      endTimeValue = toTimeInputValue(editingEvent.end);
+    }
+  } else if (initialStart && slotEnd) {
+    startDateValue = toDateInputValue(initialStart);
+    endDateValue = toDateInputValue(slotEnd);
+    startTimeValue = toTimeInputValue(initialStart);
+    endTimeValue = toTimeInputValue(slotEnd);
+  }
   let heading = "New announcement";
   if (isEditing) {
     heading = "Edit event";
