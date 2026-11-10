@@ -1,7 +1,7 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
-import { useEffect, useMemo } from "react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addDays,
   type CategoryKey,
@@ -16,17 +16,17 @@ import { api } from "../../convex/_generated/api";
 
 export function useCalendarData({
   cursor,
-  isSignedIn,
   subteamFilter,
   today,
   view,
 }: {
   cursor: Date;
-  isSignedIn: boolean | undefined;
   subteamFilter: Set<CategoryKey>;
   today: Date;
   view: "month" | "week" | "announcements";
 }) {
+  const { isAuthenticated } = useConvexAuth();
+  const [userSyncError, setUserSyncError] = useState<string | null>(null);
   const currentUser = useQuery(api.users.currentUser);
   const ensureUser = useMutation(api.users.ensureUser);
   const convexSubteams = useQuery(api.subteams.list);
@@ -34,10 +34,30 @@ export function useCalendarData({
   const convexAnnouncements = useQuery(api.announcements.list);
 
   useEffect(() => {
-    if (isSignedIn) {
-      ensureUser();
+    if (!isAuthenticated) {
+      return;
     }
-  }, [isSignedIn, ensureUser]);
+
+    let cancelled = false;
+    const syncUser = async () => {
+      try {
+        await ensureUser();
+        if (!cancelled) {
+          setUserSyncError(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setUserSyncError(
+            "Unable to load your account. Please reload the page to try again."
+          );
+        }
+      }
+    };
+    syncUser();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, ensureUser]);
 
   const eventQueryRange = useMemo(() => {
     let start: Date;
@@ -86,6 +106,7 @@ export function useCalendarData({
     defaultEventTypeId,
     events,
     keyToSubteamId,
+    userSyncError: isAuthenticated ? userSyncError : null,
     visibleEvents,
   };
 }
