@@ -1,7 +1,7 @@
 "use client";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import {
   type CalendarEvent,
   FILTER_CATEGORY_ORDER,
@@ -39,7 +39,7 @@ export function ComposerModal({
   const todayStr = toDateInputValue(new Date());
   const isEditing = Boolean(editingEvent);
   const editingSubteams = new Set(editingEvent?.subteams ?? []);
-  const isAllDay = editingEvent?.allDay ?? false;
+  const [isAllDay, setIsAllDay] = useState(editingEvent?.allDay ?? false);
   const slotEnd = initialStart
     ? new Date(initialStart.getTime() + ONE_HOUR_MS)
     : null;
@@ -206,25 +206,23 @@ export function ComposerModal({
                     isAllDay ? "allday-toggle selected" : "allday-toggle"
                   }
                   id="cf-allday"
-                  onClick={(e) => {
-                    const btn = e.currentTarget;
-                    btn.classList.toggle("selected");
-                    btn.setAttribute(
-                      "aria-pressed",
-                      btn.classList.contains("selected") ? "true" : "false"
-                    );
-                  }}
+                  onClick={() => setIsAllDay((current) => !current)}
                   type="button"
                 >
                   <span className="dot" />
                   <span>All-day event</span>
                 </button>
-                <div className="form-row">
+                <div
+                  className="form-row"
+                  hidden={isAllDay}
+                  style={isAllDay ? { display: "none" } : undefined}
+                >
                   <label className="form-field date-time-field">
                     <span className="form-label">Start time</span>
                     <input
                       className="form-input"
                       defaultValue={startTimeValue}
+                      disabled={isAllDay}
                       id="cf-start-time"
                       type="time"
                     />
@@ -234,6 +232,7 @@ export function ComposerModal({
                     <input
                       className="form-input"
                       defaultValue={endTimeValue}
+                      disabled={isAllDay}
                       id="cf-end-time"
                       type="time"
                     />

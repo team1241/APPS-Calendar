@@ -85,8 +85,9 @@ export default function CalendarApp() {
     defaultEventTypeId,
     events,
     keyToSubteamId,
+    userSyncError,
     visibleEvents,
-  } = useCalendarData({ cursor, isSignedIn, subteamFilter, today, view });
+  } = useCalendarData({ cursor, subteamFilter, today, view });
 
   const currentUserRole: UserRole =
     currentUser?.role ?? (currentUser?.isAdmin ? "admin" : "member");
@@ -405,6 +406,7 @@ export default function CalendarApp() {
       </div>
       <div className="content">
         <div className="top-glow" />
+        {userSyncError && <p role="alert">{userSyncError}</p>}
         {!carouselMode && (
           <TopBar
             adminPanelOpen={adminPanelOpen}
