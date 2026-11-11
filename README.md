@@ -106,7 +106,13 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Deploying to the Raspberry Pi
 
-The calendar runs on a Raspberry Pi that drives the hanging TV and serves the site over Tailscale. See [`deploy/pi/README.md`](deploy/pi/README.md) for setup, deploying changes, and troubleshooting.
+Production is a Raspberry Pi (`1241-calendar`) that serves the site publicly through Tailscale Funnel and drives the hanging TV, backed by the production Convex deployment. Once your changes are done, deploy them with:
+
+```bash
+npm run deploy:pi              # add -- --convex if you changed convex/
+```
+
+**[`deploy/pi/README.md`](deploy/pi/README.md)** is the full guide: prerequisites (secrets, tailnet), how the build, install and kiosk work technically, troubleshooting, and setting up a new Pi. Read its "How it works (technical)" section before changing the deploy setup.
 
 ## Learn More
 

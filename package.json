@@ -11,7 +11,8 @@
     "check": "ultracite check src",
     "fix": "ultracite fix src",
     "prepare": "lefthook install",
-    "bundle:pi": "bash deploy/pi/build-bundle.sh"
+    "bundle:pi": "bash deploy/pi/build-bundle.sh",
+    "deploy:pi": "bash deploy/pi/deploy.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
