@@ -12,14 +12,14 @@ const GLOW_ALPHA = 0.32;
 const GLOW_BLUR_PX = 6;
 const EDGE_GLOW_ALPHA = GLOW_ALPHA * 0.7;
 const EDGE_GLOW_OFFSET_PX = 2;
-const LIFT_ALPHA = 0.35;
-const LIFT_SHADOW = "0 2px 8px -3px";
+const LIFT_ALPHA = 0.3;
+const LIFT_SHADOW = "0 0 6px 0";
 const PERCENT = 100;
 
 /**
  * Each theme turns one of these two shadows on and the other off through the
  * `--pill-glow-weight` / `--pill-lift-weight` tokens in `styles/theme.css`
- * (dark: glow, light: floating shadow).
+ * (dark: glow, light: even soft halo with no vertical offset, so no edge looks thicker).
  */
 function weightedColor(
   color: string,
@@ -58,16 +58,6 @@ export function getEventColors(event: CalendarEvent): string[] {
   return [
     CATEGORIES[event.category as CategoryKey]?.color ?? FALLBACK_CATEGORY_COLOR,
   ];
-}
-
-export function getEventBackground(colors: string[], alpha = 0.26): string {
-  if (!colors.length) {
-    return withAlpha(FALLBACK_CATEGORY_COLOR, alpha);
-  }
-  if (colors.length === 1) {
-    return withAlpha(colors[0], alpha);
-  }
-  return segmentedGradient(colors, (color) => withAlpha(color, alpha));
 }
 
 /**

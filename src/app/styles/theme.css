@@ -66,6 +66,10 @@
     --calendar-text-secondary-alpha: 0.82;
     --calendar-text-tertiary-alpha: 0.68;
     --surface: rgb(255 255 255 / 0.75);
+    --glass-bg: rgb(255 255 255 / 0.92);
+    --glass-border: rgb(var(--overlay-rgb) / 0.18);
+    --text-secondary: rgb(var(--ink-rgb) / 0.78);
+    --text-tertiary: rgb(var(--ink-rgb) / 0.62);
     --bg: #f5f5f3;
     --overlay-rgb: 17 17 20;
     --ink-rgb: 22 22 26;
@@ -111,6 +115,10 @@
   --calendar-text-secondary-alpha: 0.82;
   --calendar-text-tertiary-alpha: 0.68;
   --surface: rgb(255 255 255 / 0.75);
+  --glass-bg: rgb(255 255 255 / 0.92);
+  --glass-border: rgb(var(--overlay-rgb) / 0.18);
+  --text-secondary: rgb(var(--ink-rgb) / 0.78);
+  --text-tertiary: rgb(var(--ink-rgb) / 0.62);
   --bg: #f5f5f3;
   --overlay-rgb: 17 17 20;
   --ink-rgb: 22 22 26;

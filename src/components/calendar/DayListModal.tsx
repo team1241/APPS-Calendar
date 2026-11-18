@@ -8,11 +8,10 @@ import {
   eventEndDay,
   eventStartDay,
   formatEventTimeRange,
-  getEventBackground,
+  getEventBorderStyle,
   getEventColors,
   isMultiDayEvent,
   sameDay,
-  withAlpha,
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
 
@@ -94,26 +93,20 @@ export function DayListModal({
           {dayEvents.length ? (
             dayEvents.map((e) => {
               const colors = getEventColors(e);
-              const glow = `linear-gradient(to right, ${withAlpha(colors[0], 0.35)} 0%, ${withAlpha(colors[0], 0)} 12.5%), ${getEventBackground(colors, 0.03)}`;
               return (
                 <button
                   className="day-list-item"
                   key={e.id}
                   onClick={() => onOpenEvent(e.id)}
-                  style={{ background: glow }}
+                  style={getEventBorderStyle(colors)}
                   type="button"
                 >
-                  <ColorSwatch colors={colors} size={8} />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 2,
-                      minWidth: 0,
-                    }}
-                  >
-                    <span className="t">{e.title}</span>
-                    <span className="tm">{formatEventTimeRange(e)}</span>
+                  <div className="day-list-item-inner">
+                    <ColorSwatch colors={colors} size={8} />
+                    <div className="day-list-item-text">
+                      <span className="t">{e.title}</span>
+                      <span className="tm">{formatEventTimeRange(e)}</span>
+                    </div>
                   </div>
                 </button>
               );

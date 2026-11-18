@@ -377,7 +377,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 9px;
-  width: min(318px, calc(100vw - 24px));
+  width: min(240px, calc(100vw - 24px));
   max-width: calc(100vw - 24px);
   max-height: calc(100dvh - 76px);
   padding: 11px;
@@ -1578,20 +1578,30 @@ button {
 
 .day-list-item {
   position: relative;
-  display: flex;
+  display: block;
   flex-shrink: 0;
-  gap: 10px;
-  align-items: center;
   width: 100%;
-  padding: 10px 12px;
+  padding: var(--pill-ring-width);
   overflow: hidden;
   text-align: left;
-  background: rgb(var(--overlay-rgb) / 0.03);
-  border: 1px solid var(--surface-border);
-  border-radius: 13px;
-  transition:
-    background 150ms ease-out,
-    border-color 150ms ease-out;
+  border: none;
+  border-radius: 10px;
+}
+
+.day-list-item-inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 5px 12px;
+  background: var(--ev-fill);
+  border-radius: calc(10px - var(--pill-ring-width));
+}
+
+.day-list-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 }
 
 .day-list-item::after {
@@ -2103,7 +2113,7 @@ select.form-input {
     right: 12px;
     left: auto;
     gap: 8px;
-    width: min(318px, calc(100vw - 24px));
+    width: min(240px, calc(100vw - 24px));
     max-width: calc(100vw - 24px);
     padding: 10px;
     border-radius: 14px;
