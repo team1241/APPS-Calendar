@@ -102,10 +102,8 @@ export function EventModal({
     >
       <div className="event-modal">
         <div
-          className="glow"
-          style={{
-            background: `radial-gradient(ellipse, ${primaryColor}33 0%, transparent 70%)`,
-          }}
+          className="glow glow-event"
+          style={{ "--glow-color": primaryColor } as React.CSSProperties}
         />
         <div style={{ position: "relative" }}>
           <div className="head">

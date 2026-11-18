@@ -113,7 +113,7 @@ button {
   height: 50%;
   background: radial-gradient(
     circle,
-    rgb(var(--ink-rgb) / 0.045) 0%,
+    rgb(var(--glow-rgb) / calc(0.045 * var(--wash-k))) 0%,
     transparent 70%
   );
   filter: blur(10px);
@@ -138,8 +138,8 @@ button {
   pointer-events: none;
   background: radial-gradient(
     ellipse at top,
-    rgb(var(--glow-rgb) / 0.1) 0%,
-    rgb(var(--glow-rgb) / 0.03) 40%,
+    rgb(var(--glow-rgb) / calc(0.1 * var(--glow-k))) 0%,
+    rgb(var(--glow-rgb) / calc(0.03 * var(--glow-k))) 40%,
     transparent 70%
   );
   opacity: 0.7;
@@ -383,14 +383,16 @@ button {
   padding: 11px;
   overflow: hidden;
   overflow-y: auto;
-  background: var(--glass-bg);
+  background: var(--popup-bg);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
   box-shadow:
     0 20px 60px rgb(0 0 0 / calc(0.45 * var(--shadow-k))),
     inset 0 1px 0 rgb(var(--overlay-rgb) / 0.08);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(calc(20px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
+  backdrop-filter: blur(calc(20px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
 }
 
 .filter-popover.just-opened {
@@ -447,11 +449,13 @@ button {
   display: flex;
   gap: 4px;
   padding: 5px;
-  background: var(--glass-bg);
+  background: var(--nav-bg);
   border: 1px solid var(--glass-border);
   border-radius: 999px;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(calc(16px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
+  backdrop-filter: blur(calc(16px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
   transform: translateX(-50%);
 }
 
@@ -571,13 +575,17 @@ button {
   margin-bottom: 20px;
   overflow: hidden;
   background:
-    linear-gradient(160deg, rgb(var(--overlay-rgb) / 0.06) 0%, transparent 40%),
+    linear-gradient(
+      160deg,
+      rgb(var(--sheen-rgb) / calc(0.06 * var(--glow-k))) 0%,
+      transparent 40%
+    ),
     var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: 20px;
   box-shadow:
     0 12px 32px rgb(0 0 0 / calc(0.25 * var(--shadow-k))),
-    inset 0 1px 0 rgb(var(--overlay-rgb) / 0.06);
+    inset 0 1px 0 rgb(var(--sheen-rgb) / calc(0.06 * var(--glow-k)));
 }
 
 .month-grid-header {
@@ -654,19 +662,21 @@ button {
   background:
     radial-gradient(
       ellipse at 50% 50%,
-      rgb(var(--glow-rgb) / 0.09) 0%,
-      rgb(var(--glow-rgb) / 0.03) 45%,
+      rgb(var(--glow-rgb) / calc(0.09 * var(--today-cell-glow-k))) 0%,
+      rgb(var(--glow-rgb) / calc(0.03 * var(--today-cell-glow-k))) 45%,
       transparent 75%
     ),
-    var(--surface);
+    var(--today-surface);
   border: none;
   border-radius: 14px;
   box-shadow:
-    0 14px 28px -8px rgb(0 0 0 / calc(0.55 * var(--shadow-k))),
-    0 4px 10px -4px rgb(0 0 0 / calc(0.35 * var(--shadow-k))),
-    0 0 0 1px rgb(var(--glow-rgb) / 0.16),
-    inset 0 1px 0 rgb(var(--glow-rgb) / 0.13),
-    inset 0 0 22px rgb(var(--glow-rgb) / 0.035);
+    0 14px 28px -8px
+    rgb(0 0 0 / calc(0.55 * var(--shadow-k) * var(--today-lift-k))),
+    0 4px 10px -4px
+    rgb(0 0 0 / calc(0.35 * var(--shadow-k) * var(--today-lift-k))),
+    0 0 0 1px rgb(var(--glow-rgb) / calc(0.16 * var(--today-edge-k))),
+    inset 0 1px 0 rgb(var(--glow-rgb) / calc(0.13 * var(--today-edge-k))),
+    inset 0 0 22px rgb(var(--glow-rgb) / calc(0.035 * var(--today-edge-k)));
 }
 
 .day-num-row {
@@ -761,7 +771,9 @@ button {
        inline); .pill-inner recreates the original pill's look with a plain
        dark fill nested inside, so only the ring + its soft glow carry color. */
 .event-pill.pill-glow {
-  padding: var(--pill-ring-width);
+  padding: var(--pill-ring-pad);
+  background-origin: border-box;
+  border: var(--pill-ring-border) solid transparent;
 }
 
 .pill-inner {
@@ -819,7 +831,7 @@ button {
 }
 
 .month-banner.join-left.pill-glow {
-  padding-left: var(--pill-ring-width);
+  padding-left: var(--pill-ring-pad);
 }
 
 .month-banner.join-right {
@@ -951,15 +963,15 @@ button {
   background:
     radial-gradient(
       ellipse 140% 60% at 50% 0%,
-      rgb(var(--glow-rgb) / 0.16) 0%,
-      rgb(var(--glow-rgb) / 0.04) 45%,
+      rgb(var(--glow-rgb) / calc(0.16 * var(--week-today-glow-k))) 0%,
+      rgb(var(--glow-rgb) / calc(0.04 * var(--week-today-glow-k))) 45%,
       transparent 75%
     ),
     var(--surface);
   border: 1px solid var(--surface-border);
   box-shadow:
-    0 0 16px rgb(var(--glow-rgb) / 0.12),
-    0 0 32px rgb(var(--glow-rgb) / 0.06);
+    0 0 16px rgb(var(--glow-rgb) / calc(0.12 * var(--glow-k))),
+    0 0 32px rgb(var(--glow-rgb) / calc(0.06 * var(--glow-k)));
 }
 
 .day-col.big {
@@ -986,6 +998,16 @@ button {
   margin-top: 2px;
   font-size: 16px;
   font-weight: 600;
+}
+
+.day-col.today-col .day-col-head {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(var(--glow-rgb) / var(--week-today-head-shade)) 0%,
+      transparent 100%
+    )
+    top / 100% calc(100% - 5px) no-repeat;
 }
 
 .day-col.today-col .day-col-head .num {
@@ -1057,7 +1079,7 @@ button {
 }
 
 .week-multi-banner.join-left.pill-glow {
-  padding-left: var(--pill-ring-width);
+  padding-left: var(--pill-ring-pad);
 }
 
 .week-multi-banner .pill-inner.join-left {
@@ -1074,9 +1096,10 @@ button {
   position: absolute;
   right: 4px;
   left: 4px;
-  padding: var(--pill-ring-width);
+  padding: var(--pill-ring-pad);
   overflow: hidden;
-  border: none;
+  background-origin: border-box;
+  border: var(--pill-ring-border) solid transparent;
   border-radius: 6px;
 }
 .week-event-inner {
@@ -1165,15 +1188,15 @@ button {
   background:
     radial-gradient(
       ellipse 140% 60% at 50% 0%,
-      rgb(var(--glow-rgb) / 0.16) 0%,
-      rgb(var(--glow-rgb) / 0.04) 45%,
+      rgb(var(--glow-rgb) / calc(0.16 * var(--glow-k))) 0%,
+      rgb(var(--glow-rgb) / calc(0.04 * var(--glow-k))) 45%,
       transparent 75%
     ),
     var(--surface);
   border-color: var(--surface-border);
   box-shadow:
-    0 0 16px rgb(var(--glow-rgb) / 0.12),
-    0 0 32px rgb(var(--glow-rgb) / 0.06);
+    0 0 16px rgb(var(--glow-rgb) / calc(0.12 * var(--glow-k))),
+    0 0 32px rgb(var(--glow-rgb) / calc(0.06 * var(--glow-k)));
 }
 
 .ann-card .time {
@@ -1259,7 +1282,7 @@ button {
   pointer-events: none;
   background: radial-gradient(
     ellipse,
-    rgb(var(--glow-rgb) / 0.1) 0%,
+    rgb(var(--glow-rgb) / calc(0.1 * var(--glow-k))) 0%,
     transparent 70%
   );
   transform: translateX(-50%);
@@ -1401,7 +1424,17 @@ button {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgb(0 0 0 / calc(0.55 * var(--shadow-k)));
+  background: var(--overlay-dim);
+}
+
+/* Blurs the page behind a popup. A sibling of the popup (not a filter on the overlay itself) so the popup's own frosted backdrop still sees the page. */
+.modal-overlay::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  -webkit-backdrop-filter: blur(var(--overlay-blur));
+  backdrop-filter: blur(var(--overlay-blur));
 }
 
 .event-modal {
@@ -1410,11 +1443,14 @@ button {
   max-width: 440px;
   padding: 28px;
   overflow: hidden;
-  background: var(--glass-bg);
+  background: var(--popup-bg);
   border: 1px solid var(--glass-border);
   border-radius: 22px;
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  box-shadow: var(--popup-shadow);
+  -webkit-backdrop-filter: blur(calc(14px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
+  backdrop-filter: blur(calc(14px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
 }
 
 .event-modal .glow {
@@ -1425,6 +1461,27 @@ button {
   height: 180px;
   pointer-events: none;
   transform: translateX(-50%);
+}
+
+.event-modal .glow-neutral {
+  background: radial-gradient(
+    ellipse,
+    rgb(var(--glow-rgb) / calc(0.1 * var(--glow-k))) 0%,
+    transparent 70%
+  );
+}
+
+.event-modal .glow-event {
+  background: radial-gradient(
+    ellipse,
+    color-mix(
+        in srgb,
+        var(--glow-color) calc(20% * var(--event-modal-glow-weight)),
+        transparent
+      )
+      0%,
+    transparent 70%
+  );
 }
 
 .event-modal .head {
@@ -1502,14 +1559,16 @@ button {
   max-height: 70vh;
   padding: 20px;
   overflow: hidden;
-  background: var(--glass-bg);
+  background: var(--popup-bg);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   box-shadow:
     0 20px 60px rgb(0 0 0 / calc(0.45 * var(--shadow-k))),
     inset 0 1px 0 rgb(var(--overlay-rgb) / 0.08);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(calc(20px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
+  backdrop-filter: blur(calc(20px + var(--glass-blur-boost)))
+    saturate(var(--glass-saturate));
   animation: popover-pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1520,6 +1579,11 @@ button {
   width: 300px;
   height: 180px;
   pointer-events: none;
+  background: radial-gradient(
+    ellipse,
+    rgb(var(--glow-rgb) / calc(0.08 * var(--glow-k))) 0%,
+    transparent 70%
+  );
   transform: translateX(-50%);
 }
 
@@ -1581,10 +1645,11 @@ button {
   display: block;
   flex-shrink: 0;
   width: 100%;
-  padding: var(--pill-ring-width);
+  padding: var(--pill-ring-pad);
   overflow: hidden;
   text-align: left;
-  border: none;
+  background-origin: border-box;
+  border: var(--pill-ring-border) solid transparent;
   border-radius: 10px;
 }
 
@@ -1792,7 +1857,7 @@ button {
   cursor: pointer;
   border-radius: 8px;
   opacity: 0.62;
-  filter: invert(1);
+
   transition:
     background 150ms ease,
     opacity 150ms ease;
@@ -2036,7 +2101,7 @@ select.form-input {
 .next-event-pill {
   box-shadow:
     0 4px 20px rgb(0 0 0 / calc(0.2 * var(--shadow-k))),
-    0 0 18px rgb(var(--overlay-rgb) / 0.04);
+    0 0 18px rgb(var(--sheen-rgb) / calc(0.04 * var(--wash-k)));
 }
 
 /* ---------- responsive calendar ---------- */
@@ -2077,8 +2142,8 @@ select.form-input {
   }
 
   .month-wrap .event-pill.pill-glow {
-    padding-right: var(--pill-ring-width);
-    padding-left: var(--pill-ring-width);
+    padding-right: var(--pill-ring-pad);
+    padding-left: var(--pill-ring-pad);
   }
 
   .month-wrap .pill-inner {
@@ -2279,10 +2344,11 @@ select.form-input {
     margin: 2px;
     border-radius: 10px;
     box-shadow:
-      0 8px 18px -6px rgb(0 0 0 / calc(0.5 * var(--shadow-k))),
-      0 0 0 1px rgb(var(--glow-rgb) / 0.15),
-      inset 0 0 0 1px rgb(var(--glow-rgb) / 0.13),
-      inset 0 0 18px rgb(var(--glow-rgb) / 0.045);
+      0 8px 18px -6px
+      rgb(0 0 0 / calc(0.5 * var(--shadow-k) * var(--today-lift-k))),
+      0 0 0 1px rgb(var(--glow-rgb) / calc(0.15 * var(--today-edge-k))),
+      inset 0 0 0 1px rgb(var(--glow-rgb) / calc(0.13 * var(--today-edge-k))),
+      inset 0 0 18px rgb(var(--glow-rgb) / calc(0.045 * var(--today-edge-k)));
   }
 
   .week-wrap {

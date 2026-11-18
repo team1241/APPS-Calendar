@@ -59,13 +59,7 @@ export function DayListModal({
         className="day-list-modal"
         style={animate ? undefined : { animation: "none" }}
       >
-        <div
-          className="glow"
-          style={{
-            background:
-              "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.08) 0%, transparent 70%)",
-          }}
-        />
+        <div className="glow" />
         <div className="head">
           <div>
             <span className="t">
