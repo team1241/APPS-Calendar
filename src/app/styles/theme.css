@@ -1,6 +1,27 @@
 /* Theme tokens. Dark is the default; light follows the device setting, and html[data-theme] forces either. */
 :root {
   --color-scheme: dark;
+  /* Subteam colors: pastels read well on dark; light gets deeper shades (below). */
+  --cat-assembly: #b79bfa;
+  --cat-electrical: #5fd0a0;
+  --cat-general: #ff6b6b;
+  --cat-manufacturing: #f0a35a;
+  --cat-programming: #73b4ff;
+  --cat-fallback: #999999;
+  /* Event pills. Dark: dark fill + glow. Light: tinted fill (percent of the event color) + floating shadow. */
+  --pill-tint: 0%;
+  --pill-base-alpha: 0.72;
+  --pill-font-weight: 500;
+  --pill-ring-width: 1.5px;
+  --pill-glow-weight: 1;
+  --pill-lift-weight: 0;
+  --past-event-opacity: 0.45;
+  --past-week-event-opacity: 0.55;
+  --muted-event-opacity: 0.45;
+  --other-month-opacity: 0.38;
+  --past-stripe-alpha: 0.18;
+  --calendar-text-secondary-alpha: 0.72;
+  --calendar-text-tertiary-alpha: 0.56;
   --overlay-rgb: 255 255 255;
   --ink-rgb: 250 250 248;
   --glow-rgb: 250 250 248;
@@ -26,6 +47,25 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --color-scheme: light;
+    --cat-assembly: #6d3fd6;
+    --cat-electrical: #0b7a4f;
+    --cat-general: #c62828;
+    --cat-manufacturing: #b45309;
+    --cat-programming: #1d5fd1;
+    --pill-tint: 16%;
+    --pill-base-alpha: 1;
+    --pill-font-weight: 600;
+    --pill-ring-width: 2px;
+    --pill-glow-weight: 0;
+    --pill-lift-weight: 1;
+    --past-event-opacity: 0.7;
+    --past-week-event-opacity: 0.7;
+    --muted-event-opacity: 0.85;
+    --other-month-opacity: 0.8;
+    --past-stripe-alpha: 0.1;
+    --calendar-text-secondary-alpha: 0.82;
+    --calendar-text-tertiary-alpha: 0.68;
+    --surface: rgb(255 255 255 / 0.75);
     --bg: #f5f5f3;
     --overlay-rgb: 17 17 20;
     --ink-rgb: 22 22 26;
@@ -52,6 +92,25 @@
 
 :root[data-theme="light"] {
   --color-scheme: light;
+  --cat-assembly: #6d3fd6;
+  --cat-electrical: #0b7a4f;
+  --cat-general: #c62828;
+  --cat-manufacturing: #b45309;
+  --cat-programming: #1d5fd1;
+  --pill-tint: 16%;
+  --pill-base-alpha: 1;
+  --pill-font-weight: 600;
+  --pill-ring-width: 2px;
+  --pill-glow-weight: 0;
+  --pill-lift-weight: 1;
+  --past-event-opacity: 0.7;
+  --past-week-event-opacity: 0.7;
+  --muted-event-opacity: 0.85;
+  --other-month-opacity: 0.8;
+  --past-stripe-alpha: 0.1;
+  --calendar-text-secondary-alpha: 0.82;
+  --calendar-text-tertiary-alpha: 0.68;
+  --surface: rgb(255 255 255 / 0.75);
   --bg: #f5f5f3;
   --overlay-rgb: 17 17 20;
   --ink-rgb: 22 22 26;

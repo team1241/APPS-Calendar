@@ -636,7 +636,7 @@ button {
 }
 
 .day-cell.other-month {
-  opacity: 0.38;
+  opacity: var(--other-month-opacity);
 }
 
 .day-cell.col-last {
@@ -761,7 +761,7 @@ button {
        inline); .pill-inner recreates the original pill's look with a plain
        dark fill nested inside, so only the ring + its soft glow carry color. */
 .event-pill.pill-glow {
-  padding: 1.5px;
+  padding: var(--pill-ring-width);
 }
 
 .pill-inner {
@@ -775,11 +775,11 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: var(--pill-font-weight);
   line-height: 14px;
   color: var(--text-primary);
   white-space: nowrap;
-  background: rgb(var(--panel-rgb) / 0.72);
+  background: var(--ev-fill);
   border-radius: 999px;
 }
 
@@ -819,7 +819,7 @@ button {
 }
 
 .month-banner.join-left.pill-glow {
-  padding-left: 1.5px;
+  padding-left: var(--pill-ring-width);
 }
 
 .month-banner.join-right {
@@ -836,15 +836,23 @@ button {
   content: "";
   background-image: repeating-linear-gradient(
     135deg,
-    rgb(var(--overlay-rgb) / 0.18) 0px,
-    rgb(var(--overlay-rgb) / 0.18) 1.5px,
+    rgb(var(--overlay-rgb) / var(--past-stripe-alpha)) 0px,
+    rgb(var(--overlay-rgb) / var(--past-stripe-alpha)) 1.5px,
     transparent 1.5px,
     transparent 7px
   );
 }
 
 .event-pill.is-past-event {
-  opacity: 0.45;
+  opacity: var(--past-event-opacity);
+}
+
+.event-pill.is-muted-event {
+  opacity: var(--muted-event-opacity);
+}
+
+.week-event.is-past-event {
+  opacity: var(--past-week-event-opacity);
 }
 
 .more-btn {
@@ -1049,7 +1057,7 @@ button {
 }
 
 .week-multi-banner.join-left.pill-glow {
-  padding-left: 1.5px;
+  padding-left: var(--pill-ring-width);
 }
 
 .week-multi-banner .pill-inner.join-left {
@@ -1066,7 +1074,7 @@ button {
   position: absolute;
   right: 4px;
   left: 4px;
-  padding: 1.5px;
+  padding: var(--pill-ring-width);
   overflow: hidden;
   border: none;
   border-radius: 6px;
@@ -1080,7 +1088,7 @@ button {
   padding: 4px 7px;
   overflow: hidden;
   text-align: left;
-  background: rgb(var(--panel-rgb) / 0.72);
+  background: var(--ev-fill);
   border-radius: 5px;
 }
 
@@ -2059,8 +2067,8 @@ select.form-input {
   }
 
   .month-wrap .event-pill.pill-glow {
-    padding-right: 1.5px;
-    padding-left: 1.5px;
+    padding-right: var(--pill-ring-width);
+    padding-left: var(--pill-ring-width);
   }
 
   .month-wrap .pill-inner {

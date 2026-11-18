@@ -10,9 +10,9 @@ import {
   formatEventTimeRange,
   getEventBackground,
   getEventColors,
-  hexToRgba,
   isMultiDayEvent,
   sameDay,
+  withAlpha,
 } from "@/lib/calendar/calendar";
 import { ColorSwatch } from "./ColorSwatch";
 
@@ -94,7 +94,7 @@ export function DayListModal({
           {dayEvents.length ? (
             dayEvents.map((e) => {
               const colors = getEventColors(e);
-              const glow = `linear-gradient(to right, ${hexToRgba(colors[0], 0.35)} 0%, ${hexToRgba(colors[0], 0)} 12.5%), ${getEventBackground(colors, 0.03)}`;
+              const glow = `linear-gradient(to right, ${withAlpha(colors[0], 0.35)} 0%, ${withAlpha(colors[0], 0)} 12.5%), ${getEventBackground(colors, 0.03)}`;
               return (
                 <button
                   className="day-list-item"

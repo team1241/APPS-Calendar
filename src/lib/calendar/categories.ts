@@ -1,12 +1,15 @@
 import type { CalendarEvent } from "./types";
 
+/** Subteam colors are theme tokens (see `styles/theme.css`) so each theme gets a palette tuned for its background. */
 export const CATEGORIES = {
-  assembly: { color: "#B79BFA", label: "Design" },
-  electrical: { color: "#5FD0A0", label: "Electrical" },
-  general: { color: "#FF6B6B", label: "General" },
-  manufacturing: { color: "#F0A35A", label: "Manufacturing" },
-  programming: { color: "#73B4FF", label: "Programming" },
+  assembly: { color: "var(--cat-assembly)", label: "Design" },
+  electrical: { color: "var(--cat-electrical)", label: "Electrical" },
+  general: { color: "var(--cat-general)", label: "General" },
+  manufacturing: { color: "var(--cat-manufacturing)", label: "Manufacturing" },
+  programming: { color: "var(--cat-programming)", label: "Programming" },
 } as const;
+
+export const FALLBACK_CATEGORY_COLOR = "var(--cat-fallback)";
 
 export type CategoryKey = keyof typeof CATEGORIES;
 

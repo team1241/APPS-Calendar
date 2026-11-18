@@ -218,8 +218,8 @@
 .week-wrap,
 .mobile-week-wrap,
 .ann-wrap {
-  --text-secondary: rgb(var(--ink-rgb) / 0.72);
-  --text-tertiary: rgb(var(--ink-rgb) / 0.56);
+  --text-secondary: rgb(var(--ink-rgb) / var(--calendar-text-secondary-alpha));
+  --text-tertiary: rgb(var(--ink-rgb) / var(--calendar-text-tertiary-alpha));
 }
 
 .hour-label {
@@ -241,8 +241,6 @@
   right: auto;
   height: calc(var(--week-hour-height, 52px) * var(--event-duration));
   min-height: 26px;
-  /* Separates cascaded events where they overlap. */
-  box-shadow: 0 0 0 1px var(--bg);
 }
 
 .week-event .t {

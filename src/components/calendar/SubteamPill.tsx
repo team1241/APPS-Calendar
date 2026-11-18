@@ -4,8 +4,7 @@ import type React from "react";
 import {
   CATEGORIES,
   type CategoryKey,
-  esc,
-  hexToRgba,
+  withAlpha,
 } from "@/lib/calendar/calendar";
 
 export function SubteamPill({
@@ -43,9 +42,9 @@ export function SubteamPill({
       }}
       style={
         {
-          "--pill-bg": hexToRgba(category.color, 0.16),
-          "--pill-border": hexToRgba(category.color, 0.55),
-          "--pill-glow": hexToRgba(category.color, 0.4),
+          "--pill-bg": withAlpha(category.color, 0.16),
+          "--pill-border": withAlpha(category.color, 0.55),
+          "--pill-glow": withAlpha(category.color, 0.4),
         } as React.CSSProperties
       }
       type="button"
@@ -54,7 +53,7 @@ export function SubteamPill({
         className="cat-dot"
         style={{ background: category.color, height: 7, width: 7 }}
       />
-      {esc(category.label)}
+      {category.label}
     </button>
   );
 }
