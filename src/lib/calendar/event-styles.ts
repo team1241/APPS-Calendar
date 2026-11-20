@@ -1,29 +1,51 @@
 import type React from "react";
-import { CATEGORIES, type CategoryKey } from "./categories";
+import {
+  CATEGORIES,
+  type CategoryKey,
+  FALLBACK_CATEGORY_COLOR,
+} from "./categories";
+import { withAlpha } from "./color-utils";
 import type { CalendarEvent } from "./types";
 
-export function esc(s: string | undefined): string {
-  if (!s) {
-    return "";
-  }
-  return String(s).replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "'": "&#39;", '"': "&quot;", "&": "&amp;", "<": "&lt;", ">": "&gt;" })[
-        c
-      ] ?? c
+const RING_ALPHA = 0.8;
+const GLOW_ALPHA = 0.32;
+const GLOW_BLUR_PX = 6;
+const EDGE_GLOW_ALPHA = GLOW_ALPHA * 0.7;
+const EDGE_GLOW_OFFSET_PX = 2;
+const LIFT_ALPHA = 0.3;
+const LIFT_SHADOW = "0 0 6px 0";
+const PERCENT = 100;
+
+/**
+ * Each theme turns one of these two shadows on and the other off through the
+ * `--pill-glow-weight` / `--pill-lift-weight` tokens in `styles/theme.css`
+ * (dark: glow, light: even soft halo with no vertical offset, so no edge looks thicker).
+ */
+function weightedColor(
+  color: string,
+  alpha: number,
+  weightToken: string
+): string {
+  return `color-mix(in srgb, ${color} calc(${alpha * PERCENT}% * var(${weightToken})), transparent)`;
+}
+
+/** Equal-width hard-stop segments, one per color, left to right. */
+function segmentedGradient(
+  colors: string[],
+  styleColor: (color: string) => string
+): string {
+  const step = PERCENT / colors.length;
+  const stops = colors.map(
+    (color, i) => `${styleColor(color)} ${i * step}% ${(i + 1) * step}%`
   );
+  return `linear-gradient(90deg, ${stops.join(", ")})`;
 }
-export function hexToRgba(hex: string, alpha: number): string {
-  const value = String(hex).replace("#", "");
-  if (value.length !== 6) {
-    return hex;
-  }
-  const red = Number.parseInt(value.slice(0, 2), 16);
-  const green = Number.parseInt(value.slice(2, 4), 16);
-  const blue = Number.parseInt(value.slice(4, 6), 16);
-  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+
+/** The theme's base fill mixed with `color` by `--pill-tint` (0% in dark, so dark stays untinted). */
+function tintedFill(color: string): string {
+  return `color-mix(in srgb, ${color} var(--pill-tint), rgb(var(--panel-rgb) / var(--pill-base-alpha)))`;
 }
+
 export function getEventColors(event: CalendarEvent): string[] {
   if (Array.isArray(event.subteams) && event.subteams.length) {
     const colors = event.subteams
@@ -33,42 +55,34 @@ export function getEventColors(event: CalendarEvent): string[] {
       return colors;
     }
   }
-  return [CATEGORIES[event.category as CategoryKey]?.color || "#999999"];
+  return [
+    CATEGORIES[event.category as CategoryKey]?.color ?? FALLBACK_CATEGORY_COLOR,
+  ];
 }
-export function getEventBackground(colors: string[], alpha = 0.26): string {
-  if (!colors.length) {
-    return `rgba(153, 153, 153, ${alpha})`;
-  }
-  if (colors.length === 1) {
-    return hexToRgba(colors[0], alpha);
-  }
-  const step = 100 / colors.length;
-  return `linear-gradient(90deg, ${colors.map((color, index) => `${hexToRgba(color, alpha)} ${index * step}% ${(index + 1) * step}%`).join(", ")})`;
-}
+
+/**
+ * Style for the outer element of a pill: a colored ring (the background) plus
+ * the theme's shadow. `flat` drops the shadow, used for past and muted items.
+ * `--ev-fill` is the inner fill: the theme's base fill tinted with each
+ * subteam color, split into equal segments like the ring.
+ */
 export function getEventBorderStyle(
   colors: string[],
-  opts?: { borderAlpha?: number; glowAlpha?: number; glowSize?: number }
+  { flat = false }: { flat?: boolean } = {}
 ): React.CSSProperties {
-  const { borderAlpha = 0.8, glowAlpha = 0.32, glowSize = 6 } = opts || {};
-  const list = colors?.length ? colors : ["#999999"];
-  if (list.length === 1) {
-    const [primary] = list;
-    const ring = hexToRgba(primary, borderAlpha);
-    const glow = hexToRgba(primary, glowAlpha);
-    return { background: ring, boxShadow: `0 0 ${glowSize}px ${glow}` };
-  }
-  const n = list.length;
-  const step = 100 / n;
-  const ringStops = list
-    .map(
-      (color, i) =>
-        `${hexToRgba(color, borderAlpha)} ${i * step}% ${(i + 1) * step}%`
-    )
-    .join(", ");
-  const edgeGlowLeft = hexToRgba(list[0], glowAlpha * 0.7);
-  const edgeGlowRight = hexToRgba(list[n - 1], glowAlpha * 0.7);
+  const list = colors.length ? colors : [FALLBACK_CATEGORY_COLOR];
+  const [first] = list;
+  const last = list.at(-1) ?? first;
+  const ring = segmentedGradient(list, (color) => withAlpha(color, RING_ALPHA));
+  const fill = segmentedGradient(list, tintedFill);
+  const glow =
+    list.length === 1
+      ? `0 0 ${GLOW_BLUR_PX}px ${weightedColor(first, GLOW_ALPHA, "--pill-glow-weight")}`
+      : `-${EDGE_GLOW_OFFSET_PX}px 0 ${GLOW_BLUR_PX}px ${weightedColor(first, EDGE_GLOW_ALPHA, "--pill-glow-weight")}, ${EDGE_GLOW_OFFSET_PX}px 0 ${GLOW_BLUR_PX}px ${weightedColor(last, EDGE_GLOW_ALPHA, "--pill-glow-weight")}`;
+  const lift = `${LIFT_SHADOW} ${weightedColor(first, LIFT_ALPHA, "--pill-lift-weight")}`;
   return {
-    background: `linear-gradient(90deg, ${ringStops})`,
-    boxShadow: `-2px 0 ${glowSize}px ${edgeGlowLeft}, 2px 0 ${glowSize}px ${edgeGlowRight}`,
-  };
+    "--ev-fill": fill,
+    background: ring,
+    boxShadow: flat ? "none" : `${glow}, ${lift}`,
+  } as React.CSSProperties;
 }

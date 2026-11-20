@@ -8,9 +8,8 @@ import {
   eventEndDay,
   eventStartDay,
   formatEventTimeRange,
-  getEventBackground,
+  getEventBorderStyle,
   getEventColors,
-  hexToRgba,
   isMultiDayEvent,
   sameDay,
 } from "@/lib/calendar/calendar";
@@ -60,13 +59,7 @@ export function DayListModal({
         className="day-list-modal"
         style={animate ? undefined : { animation: "none" }}
       >
-        <div
-          className="glow"
-          style={{
-            background:
-              "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.08) 0%, transparent 70%)",
-          }}
-        />
+        <div className="glow" />
         <div className="head">
           <div>
             <span className="t">
@@ -94,26 +87,20 @@ export function DayListModal({
           {dayEvents.length ? (
             dayEvents.map((e) => {
               const colors = getEventColors(e);
-              const glow = `linear-gradient(to right, ${hexToRgba(colors[0], 0.35)} 0%, ${hexToRgba(colors[0], 0)} 12.5%), ${getEventBackground(colors, 0.03)}`;
               return (
                 <button
                   className="day-list-item"
                   key={e.id}
                   onClick={() => onOpenEvent(e.id)}
-                  style={{ background: glow }}
+                  style={getEventBorderStyle(colors)}
                   type="button"
                 >
-                  <ColorSwatch colors={colors} size={8} />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 2,
-                      minWidth: 0,
-                    }}
-                  >
-                    <span className="t">{e.title}</span>
-                    <span className="tm">{formatEventTimeRange(e)}</span>
+                  <div className="day-list-item-inner">
+                    <ColorSwatch colors={colors} size={8} />
+                    <div className="day-list-item-text">
+                      <span className="t">{e.title}</span>
+                      <span className="tm">{formatEventTimeRange(e)}</span>
+                    </div>
                   </div>
                 </button>
               );

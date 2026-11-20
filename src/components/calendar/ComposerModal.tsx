@@ -107,13 +107,7 @@ export function ComposerModal({
       }}
     >
       <div className="event-modal composer-modal">
-        <div
-          className="glow"
-          style={{
-            background:
-              "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.10) 0%, transparent 70%)",
-          }}
-        />
+        <div className="glow glow-neutral" />
         <div
           style={{
             display: "flex",

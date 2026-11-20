@@ -39,12 +39,15 @@ export function ConfirmationModal({
     >
       <div className="event-modal confirmation-modal">
         <div
-          className="glow"
-          style={{
-            background: confirmation.isDestructive
-              ? "radial-gradient(ellipse, rgba(224, 90, 90, 0.16) 0%, transparent 70%)"
-              : "radial-gradient(ellipse, rgb(var(--glow-rgb) / 0.10) 0%, transparent 70%)",
-          }}
+          className={confirmation.isDestructive ? "glow" : "glow glow-neutral"}
+          style={
+            confirmation.isDestructive
+              ? {
+                  background:
+                    "radial-gradient(ellipse, rgba(224, 90, 90, 0.16) 0%, transparent 70%)",
+                }
+              : undefined
+          }
         />
         <div style={{ position: "relative" }}>
           <h2>{confirmation.message}</h2>

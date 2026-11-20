@@ -236,28 +236,22 @@ export function MonthView({
                           const isPastDay = date < today;
                           const showStripe = isViewingCurrentMonth && isPastDay;
                           const isMuted = !isViewingCurrentMonth;
-                          const borderStyle = getEventBorderStyle(
-                            colors,
-                            showStripe || isMuted
-                              ? { glowAlpha: 0, glowSize: 0 }
-                              : undefined
-                          );
+                          const borderStyle = getEventBorderStyle(colors, {
+                            flat: showStripe || isMuted,
+                          });
                           return (
                             <button
                               className={[
                                 "event-pill",
                                 "pill-glow",
                                 showStripe && "is-past-event",
+                                isMuted && "is-muted-event",
                               ]
                                 .filter(Boolean)
                                 .join(" ")}
                               key={e.id}
                               onClick={() => onOpenEvent(e.id)}
-                              style={{
-                                gridRow: lane + 1,
-                                opacity: isMuted ? 0.45 : undefined,
-                                ...borderStyle,
-                              }}
+                              style={{ gridRow: lane + 1, ...borderStyle }}
                               type="button"
                             >
                               <div className="pill-inner">
@@ -291,12 +285,9 @@ export function MonthView({
                       const isPastBanner = eventEndDay(seg.event) < today;
                       const showStripe = isViewingCurrentMonth && isPastBanner;
                       const isMuted = !isViewingCurrentMonth;
-                      const borderStyle = getEventBorderStyle(
-                        colors,
-                        showStripe || isMuted
-                          ? { glowAlpha: 0, glowSize: 0 }
-                          : undefined
-                      );
+                      const borderStyle = getEventBorderStyle(colors, {
+                        flat: showStripe || isMuted,
+                      });
                       return (
                         <button
                           className={[
@@ -304,6 +295,7 @@ export function MonthView({
                             "month-banner",
                             "pill-glow",
                             showStripe && "is-past-event",
+                            isMuted && "is-muted-event",
                             !seg.isTrueStart && "join-left",
                             !seg.isTrueEnd && "join-right",
                           ]
@@ -314,7 +306,6 @@ export function MonthView({
                           style={{
                             gridColumn: `${seg.colStart + 1} / ${seg.colEnd + 2}`,
                             marginTop: BANNER_TOP + seg.lane * BANNER_LANE_H,
-                            opacity: isMuted ? 0.45 : undefined,
                             ...borderStyle,
                           }}
                           type="button"

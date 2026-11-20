@@ -14,8 +14,10 @@ import {
   CATEGORIES,
   type CalendarAnnouncement,
   type CalendarEvent,
+  FALLBACK_CATEGORY_COLOR,
   fmtTime,
   getEventColors,
+  withAlpha,
 } from "@/lib/calendar/calendar";
 import { SubteamTags } from "./SubteamTags";
 
@@ -42,7 +44,9 @@ export function EventModal({
   }
   const isAnnouncement = "snippet" in event;
   const calEvent = event as CalendarEvent;
-  const colors = isAnnouncement ? ["#999999"] : getEventColors(calEvent);
+  const colors = isAnnouncement
+    ? [FALLBACK_CATEGORY_COLOR]
+    : getEventColors(calEvent);
   const primaryColor = colors[0];
 
   let chip: React.ReactNode = null;
@@ -56,7 +60,9 @@ export function EventModal({
     chip = (
       <div
         className="cat-chip"
-        style={{ background: `${CATEGORIES[calEvent.category]?.color}22` }}
+        style={{
+          background: withAlpha(CATEGORIES[calEvent.category]?.color, 0.13),
+        }}
       >
         <span
           className="cat-dot"
@@ -96,10 +102,8 @@ export function EventModal({
     >
       <div className="event-modal">
         <div
-          className="glow"
-          style={{
-            background: `radial-gradient(ellipse, ${primaryColor}33 0%, transparent 70%)`,
-          }}
+          className="glow glow-event"
+          style={{ "--glow-color": primaryColor } as React.CSSProperties}
         />
         <div style={{ position: "relative" }}>
           <div className="head">

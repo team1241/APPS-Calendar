@@ -83,10 +83,7 @@ export function WeekView({
       segments.map((seg) => {
         const colors = getEventColors(seg.event);
         const isPastBanner = eventEndDay(seg.event) < today;
-        const borderStyle = getEventBorderStyle(
-          colors,
-          isPastBanner ? { glowAlpha: 0, glowSize: 0 } : undefined
-        );
+        const borderStyle = getEventBorderStyle(colors, { flat: isPastBanner });
         return (
           <button
             className={[
@@ -218,10 +215,7 @@ export function WeekView({
               const colors = getEventColors(layout.event);
               const isPast =
                 opts.isPrev || (opts.isToday && layout.event.end < new Date());
-              const borderStyle = getEventBorderStyle(
-                colors,
-                isPast ? { glowAlpha: 0, glowSize: 0 } : undefined
-              );
+              const borderStyle = getEventBorderStyle(colors, { flat: isPast });
               const timeRange = `${fmtTime(layout.event.start)} - ${fmtTime(layout.event.end)}`;
               return (
                 <button
@@ -240,7 +234,6 @@ export function WeekView({
                       "--event-start": layout.startHours,
                       "--title-lines": getTitleLines(layout.durationHours),
                       left: `${layout.leftPercent}%`,
-                      opacity: isPast ? 0.55 : 1,
                       width: `${layout.widthPercent}%`,
                       zIndex: layout.zIndex,
                       ...borderStyle,
